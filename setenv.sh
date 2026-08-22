@@ -27,7 +27,12 @@ if [[ -z "$PYTHON3" ]]; then
   fi
 fi
 export IS64=$1
-export ARM64=1
+TARGET_ARCH="${2:-arm64}"
+if [[ "$TARGET_ARCH" == "arm64" ]]; then
+  export ARM64=1
+else
+  unset ARM64
+fi
 
 export CFLAGS="-FS"
 export WSLENV="$WSLENV:MHMAKECONF/l:PYTHON3/l:IS64/l:ARM64/l:CFLAGS/l"

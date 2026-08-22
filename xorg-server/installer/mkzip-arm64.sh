@@ -23,6 +23,7 @@ add -C ../../libXext/src/objARM64/release libXext.dll
 add -C ../../libXmu/src/objARM64/release libXmu.dll
 add -C ../../openssl/arm64 libcrypto-3-arm64.dll libssl-3-arm64.dll
 add -C ../../freetype/objs/ARM64/Release freetype.dll
+add vcruntime140.dll vcruntime140_1.dll msvcp140.dll
 add -C .. xkbdata locale bitmaps fonts
 
 gzip -f "$OUTFILE"

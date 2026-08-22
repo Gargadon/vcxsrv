@@ -14,7 +14,7 @@ ARM64 build and standalone packaging for BanchoXterm.
   `LIBPATH` variables.
 - Adds ARM64-safe generated-file and resource paths, including the X.Org
   `ETCX11DIR` fallback used by the standalone server.
-- Provides a portable ARM64 package workflow. BanchoXterm consumes the
+- Provides portable x64 and ARM64 package workflows. BanchoXterm consumes the
   resulting ZIP as an external companion process; it does not compile or link
   VcXsrv.
 
@@ -32,11 +32,16 @@ terminal inside a Windows folder (because a case-insensitive filesystem is
 needed). The GitHub Actions workflow documents the supported automated build
 and publishes a standalone ZIP.
 
-## Standalone ARM64 package
+## Standalone packages
 
-The workflow produces `vcxsrv-windows-arm64.zip`. It contains `vcxsrv.exe`,
-the ARM64 DLLs, XKB data, locale data, bitmaps, fonts and the files required by
-the X server. Extract the ZIP and place the resulting directory under
+The workflow produces:
+
+- `vcxsrv-windows-x64.zip`
+- `vcxsrv-windows-arm64.zip`
+
+Each archive contains `vcxsrv.exe`, the matching DLLs, XKB data, locale data,
+bitmaps, fonts and the files required by the X server. Extract the matching ZIP
+and place the resulting directory under `xservers/vcxsrv-x64/` or
 `xservers/vcxsrv-arm64/` in a BanchoXterm package.
 
 The package is intentionally separate from BanchoXterm. This keeps the X

@@ -1,0 +1,100 @@
+name: Build VcXsrv
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: x64
+            msvc_arch: amd64
+            build_arch: x64
+            archive_prefix: vcxsrv-64
+          - name: arm64
+            msvc_arch: amd64_arm64
+            build_arch: arm64
+            archive_prefix: vcxsrv-arm64
+
+    runs-on: windows-2025
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install native build prerequisites
+        shell: pwsh
+        run: choco install strawberryperl nasm -y --no-progress
+
+      - name: Install Cygwin build tools
+        uses: cygwin/cygwin-install-action@master
+        with:
+          packages: bison,flex,gawk,gperf,gzip,nasm,patch,perl,python39,python39-lxml,sed
+
+      - name: Enable MSVC toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.msvc_arch }}
+
+      - name: Build VcXsrv
+        shell: C:\cygwin64\bin\bash.exe --login -eo pipefail '{0}'
+        run: |
+          export SHELLOPTS
+          set -o igncr
+          ./buildall.sh 1 2 R x ${{ matrix.build_arch }} NOPACKAGE
+
+      - name: Stage MSVC runtime
+        shell: pwsh
+        run: |
+          $runtimeArch = if ('${{ matrix.name }}' -eq 'arm64') { 'arm64' } else { 'x64' }
+          $runtime = Join-Path $env:VCToolsRedistDir "$runtimeArch\Microsoft.VC143.CRT"
+          if (-not (Test-Path -LiteralPath $runtime)) {
+            throw "MSVC runtime directory not found: $runtime"
+          }
+          Copy-Item "$runtime\vcruntime140.dll" "xorg-server\installer\" -Force
+          Copy-Item "$runtime\vcruntime140_1.dll" "xorg-server\installer\" -Force
+          Copy-Item "$runtime\msvcp140.dll" "xorg-server\installer\" -Force
+
+      - name: Create standalone package
+        shell: C:\cygwin64\bin\bash.exe --login -eo pipefail '{0}'
+        run: |
+          export SHELLOPTS
+          set -o igncr
+          cd xorg-server/installer
+          if [[ '${{ matrix.name }}' == 'arm64' ]]; then
+            bash mkzip-arm64.sh
+          else
+            bash mkzip-64.sh
+          fi
+
+      - name: Extract and create ZIP
+        shell: pwsh
+        run: |
+          $archive = Get-ChildItem "xorg-server\installer\${{ matrix.archive_prefix }}.*.portable.tar.gz" | Select-Object -First 1
+          if (-not $archive) {
+            throw "Standalone archive was not produced for ${{ matrix.name }}"
+          }
+          $dist = "dist\vcxsrv-${{ matrix.name }}"
+          New-Item -ItemType Directory -Path $dist -Force | Out-Null
+          tar -xzf $archive.FullName -C $dist
+          Compress-Archive -Path "$dist\*" -DestinationPath "vcxsrv-windows-${{ matrix.name }}.zip"
+
+      - name: Upload standalone ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: vcxsrv-windows-${{ matrix.name }}
+          path: vcxsrv-windows-${{ matrix.name }}.zip
+
+      - name: Publish release asset
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: vcxsrv-windows-${{ matrix.name }}.zip

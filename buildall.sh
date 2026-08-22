@@ -1,7 +1,13 @@
 #!/bin/bash
 
+TARGET_ARCH="${5:-arm64}"
+if [[ "$TARGET_ARCH" != "arm64" && "$TARGET_ARCH" != "x64" ]]; then
+  echo "Please pass x64 or arm64 as the fifth argument"
+  exit 1
+fi
+
 if [[ "$1" == "1" ]] ; then
-source ./setenv.sh 1
+source ./setenv.sh 1 "$TARGET_ARCH"
 elif [[ "$1" == "0" ]] ; then
 source ./setenv.sh 0
 else
@@ -66,14 +72,21 @@ check-error 'Please install strawberry perl portable edition into c:\perl'
 if [[ "$BUILDDEPS" == "1" ]] ; then
 
 if [[ "$IS64" == "1" ]]; then
+	if [[ "$TARGET_ARCH" == "arm64" ]]; then
+		FREETYPE_PLATFORM=ARM64
+		OPENSSL_CONFIG=VC-WIN64-ARM
+	else
+		FREETYPE_PLATFORM=x64
+		OPENSSL_CONFIG=VC-WIN64A
+	fi
 	if [[ "$BUILDRELEASE" == "1" ]] ; then
-		echo MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Release" -p:Platform=ARM64 -m:$2
-		MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Release" -p:Platform=ARM64 -m:$2
+		echo MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Release" -p:Platform=$FREETYPE_PLATFORM -m:$2
+		MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Release" -p:Platform=$FREETYPE_PLATFORM -m:$2
 		check-error 'Error compiling freetype'
 	fi
 	if [[ "$BUILDDEBUG" == "1" ]] ; then
-		echo MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Debug" -p:Platform=ARM64 -m:$2
-		MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Debug" -p:Platform=ARM64 -m:$2
+		echo MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Debug" -p:Platform=$FREETYPE_PLATFORM -m:$2
+		MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Debug" -p:Platform=$FREETYPE_PLATFORM -m:$2
 		check-error 'Error compiling freetype'
 	fi
 else
@@ -99,7 +112,7 @@ if [[ "$BUILDRELEASE" == "1" ]] ; then
 		fi
 		cd release64
 
-		perl.exe ../Configure VC-WIN64-ARM --release
+		perl.exe ../Configure $OPENSSL_CONFIG --release
 	else
 
 		if [[ ! -d "release32" ]]; then
@@ -124,7 +137,7 @@ if [[ "$BUILDDEBUG" == "1" ]] ; then
 		  mkdir debug64
 		fi
 		cd debug64
-		perl.exe ../Configure VC-WIN64-ARM --debug
+		perl.exe ../Configure $OPENSSL_CONFIG --debug
 	else
 		if [[ ! -d "debug32" ]]; then
 		  mkdir debug32
@@ -181,8 +194,10 @@ if [[ "$IS64" == "1" ]]; then
 		check-error 'Error compiling vcxsrv for debug'
 	fi
 
-	cd xorg-server/installer
-	./packageall.sh nox86
+	if [[ "${6:-}" != "NOPACKAGE" ]]; then
+		cd xorg-server/installer
+		./packageall.sh nox86
+	fi
 
 else
 
