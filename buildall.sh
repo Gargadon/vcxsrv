@@ -58,13 +58,13 @@ if [[ "$BUILDDEPS" == "1" ]] ; then
 
 if [[ "$IS64" == "1" ]]; then
 	if [[ "$BUILDRELEASE" == "1" ]] ; then
-		echo MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Release" -p:Platform=x64 -m:$2
-		MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Release" -p:Platform=x64 -m:$2
+		echo MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Release" -p:Platform=ARM64 -m:$2
+		MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Release" -p:Platform=ARM64 -m:$2
 		check-error 'Error compiling freetype'
 	fi
 	if [[ "$BUILDDEBUG" == "1" ]] ; then
-		echo MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Debug" -p:Platform=x64 -m:$2
-		MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Debug" -p:Platform=x64 -m:$2
+		echo MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Debug" -p:Platform=ARM64 -m:$2
+		MSBuild.exe freetype/MSBuild.sln -t:Build -p:Configuration="Debug" -p:Platform=ARM64 -m:$2
 		check-error 'Error compiling freetype'
 	fi
 else
@@ -90,7 +90,7 @@ if [[ "$BUILDRELEASE" == "1" ]] ; then
 		fi
 		cd release64
 
-		perl.exe ../Configure VC-WIN64A --release
+		perl.exe ../Configure VC-WIN64-ARM --release
 	else
 
 		if [[ ! -d "release32" ]]; then
@@ -115,7 +115,7 @@ if [[ "$BUILDDEBUG" == "1" ]] ; then
 		  mkdir debug64
 		fi
 		cd debug64
-		perl.exe ../Configure VC-WIN64A --debug
+		perl.exe ../Configure VC-WIN64-ARM --debug
 	else
 		if [[ ! -d "debug32" ]]; then
 		  mkdir debug32

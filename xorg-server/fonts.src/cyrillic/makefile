@@ -5,6 +5,9 @@ endif
 INC_BDF_RULES=1
 
 DESTDIR=$(MHMAKECONF)\xorg-server\fonts\cyrillic
+ifeq ($(ARM64),1)
+BDFTOPCF=$(MHMAKECONF)\hosttools\bdftopcf.exe
+endif
 
 FONT_FILES = \
 	proof9x16 \
@@ -95,7 +98,11 @@ PCF_FILES = $(FONT_FILES:%=$(DESTDIR)\%.pcf.gz)
 
 font_DATA = $(PCF_FILES)
 
+ifeq ($(ARM64),1)
+MKFONTSCALE=$(MHMAKECONF)\hosttools\mkfontscale.exe
+else
 MKFONTSCALE=$(MHMAKECONF)\mkfontscale\$(OBJDIR)\mkfontscale.exe
+endif
 
 load_makefile $(MHMAKECONF)\mkfontscale\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 

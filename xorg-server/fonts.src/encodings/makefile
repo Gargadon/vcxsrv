@@ -46,7 +46,11 @@ COMPRESSED = $(ENCODING_FILES:%=$(DESTDIR)\%.gz)
 
 DATA_FILES = $(COMPRESSED)
 
+ifeq ($(ARM64),1)
+MKFONTSCALE=$(MHMAKECONF)\hosttools\mkfontscale.exe
+else
 MKFONTSCALE=$(MHMAKECONF)\mkfontscale\$(OBJDIR)\mkfontscale.exe
+endif
 
 load_makefile $(MHMAKECONF)\mkfontscale\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 

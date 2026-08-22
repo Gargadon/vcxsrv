@@ -23,10 +23,17 @@ CCFLAGS   += -c -GF -Gy -FS #-Wall
 LINK      ?= link /nologo
 LINKFLAGS += /INCREMENTAL:NO
 ifeq ($(IS64),1)
+ifeq ($(ARM64),1)
+AS=
+LINKFLAGS += /MACHINE:ARM64
+OBJDIREXTRA=ARM64
+SSLSUFFIX=arm64
+else
 AS=ml64
 LINKFLAGS += /MACHINE:X64
 OBJDIREXTRA=64
 SSLSUFFIX=64
+endif
 else
 AS=ml
 LINKFLAGS += /MACHINE:X86
@@ -60,7 +67,11 @@ NOSERVOBJDIR ?= obj$(OBJDIREXTRA)\debug
 SERVOBJDIR ?= obj$(OBJDIREXTRA)\servdebug
 DEFINES += _DEBUG DEBUG
 RCFLAGS += -d "_DEBUG"
+ifeq ($(ARM64),1)
+OPENSSLOBJDIR:=arm64
+else
 OPENSSLOBJDIR:=debug$(SSLSUFFIX)
+endif
 else
 CCFLAGS   += -MD -O2 -Ob2 -Oi -Ox -Oy -Ot -Zi -GL
 DEFINES   +=  NDEBUG
@@ -70,12 +81,20 @@ NOSERVOBJDIR ?= obj$(OBJDIREXTRA)\release
 SERVOBJDIR ?= obj$(OBJDIREXTRA)\servrelease
 RCFLAGS += -d "NDEBUG"
 AR += /LTCG
+ifeq ($(ARM64),1)
+OPENSSLOBJDIR:=arm64
+else
 OPENSSLOBJDIR:=release$(SSLSUFFIX)
+endif
 endif
 
 
 
-DEFINES += WIN32 _WIN32 _WINDOWS WINDOWS _MBCS __i386__ __MINGW32__ _POSIX_ X_NOT_POSIX _TIMEVAL_DEFINED mode_t=int __STDC__
+ifeq ($(ARM64),1)
+DEFINES += WIN32 _WIN32 _WINDOWS WINDOWS _MBCS _POSIX_ X_NOT_POSIX _TIMEVAL_DEFINED mode_t=int
+else
+DEFINES += WIN32 _WIN32 _WINDOWS WINDOWS _MBCS _POSIX_ X_NOT_POSIX _TIMEVAL_DEFINED mode_t=int __STDC__
+endif
 DEFINES += FAKEIT HAVE_CONFIG_H _BSD_SOURCE _WIN32_WINNT=_WIN32_WINNT_WINXP
 
 TOPSRCDIR=$(MHMAKECONF)\xorg-server
@@ -98,7 +117,12 @@ all: $(OBJDIR)
 ifeq ($(DEBUG),1)
 PTHREADLIB:=$(MHMAKECONF)\pthreads\libpthreadVC3d$(OBJDIREXTRA).lib
 ifeq ($(IS64),1)
+ifeq ($(ARM64),1)
+PTHREADLIB:=$(MHMAKECONF)\pthreads\libpthreadVC3.lib
+FREETYPELIB:=$(MHMAKECONF)\freetype\objs\ARM64\Debug\freetype.lib
+else
 FREETYPELIB:=$(MHMAKECONF)\freetype\objs\x$(OBJDIREXTRA)\Debug\freetype.lib
+endif
 else
 FREETYPELIB:=$(MHMAKECONF)\freetype\objs\Win32\Debug\freetype.lib
 endif
@@ -106,10 +130,19 @@ OPENSSLLIB:=$(MHMAKECONF)\openssl\debug$(SSLSUFFIX)\libssl.lib $(MHMAKECONF)\ope
 else
 PTHREADLIB:=$(MHMAKECONF)\pthreads\libpthreadVC3$(OBJDIREXTRA).lib
 ifeq ($(IS64),1)
+ifeq ($(ARM64),1)
+PTHREADLIB:=$(MHMAKECONF)\pthreads\libpthreadVC3.lib
+FREETYPELIB:=$(MHMAKECONF)\freetype\objs\ARM64\Release\freetype.lib
+else
 FREETYPELIB:=$(MHMAKECONF)\freetype\objs\x$(OBJDIREXTRA)\Release\freetype.lib
+endif
 else
 FREETYPELIB:=$(MHMAKECONF)\freetype\objs\Win32\Release\freetype.lib
 endif
+ifeq ($(ARM64),1)
+OPENSSLLIB:=$(MHMAKECONF)\openssl\arm64\libssl.lib $(MHMAKECONF)\openssl\arm64\libcrypto.lib
+else
 OPENSSLLIB:=$(MHMAKECONF)\openssl\release$(SSLSUFFIX)\libssl.lib $(MHMAKECONF)\openssl\release$(SSLSUFFIX)\libcrypto.lib
+endif
 endif
 LIBXMLLIB:=$(MHMAKECONF)\libxml2\lib$(OBJDIREXTRA)\libxml2-2.lib

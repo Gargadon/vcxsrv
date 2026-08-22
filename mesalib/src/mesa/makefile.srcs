@@ -39,8 +39,8 @@ main/format_unpack.c: main/format_unpack.py main/formats.csv	\
 
 main/formats.c: main/format_info.h
 
-YACC_GEN = c:/winflexbison/win_bison.exe -d -v
-LEX_GEN = c:/winflexbison/win_flex.exe
+YACC_GEN = C:/Users/dkant/Source/banchoxterm/build/vcxsrv-arm64-src/tools/mhmake/win_bison.exe -d -v
+LEX_GEN = C:/Users/dkant/Source/banchoxterm/build/vcxsrv-arm64-src/tools/mhmake/win_flex.exe
 
 program/lex.yy.c: program/program_lexer.l
 	$(LEX_GEN) -o $@ $(srcdir)/program/program_lexer.l

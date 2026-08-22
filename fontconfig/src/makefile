@@ -7,7 +7,7 @@ $(OBJDIR)\fcobjshash.gperf: fcobjshash.gperf.h fcobjs.h
 	rm $<.c
 
 $(OBJDIR)\fcobjshash.h: $(OBJDIR)\fcobjshash.gperf
-	gperf -m 100 $< > $@
+	gperf-wrapper.bat -m 100 $< > $@
 	$(PYTHON3) converttype.py $@
 
 DEFINES+=FC_TEMPLATEDIR=\"./conf.avail\"

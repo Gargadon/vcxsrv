@@ -46,12 +46,14 @@
 // compiling for ARM we should wrap <wchar.h> include with 'extern "C++" {}'
 // or compiler give many errors like this:
 //   error C2733: second C linkage of overloaded function 'wmemchr' not allowed
-#ifdef __cplusplus
+#if !defined(_M_ARM64) && !defined(_M_ARM64EC)
+#  ifdef __cplusplus
 extern "C" {
-#endif
-#  include <wchar.h>
-#ifdef __cplusplus
+#  endif
+#    include <wchar.h>
+#  ifdef __cplusplus
 }
+#  endif
 #endif
 
 // Define _W64 macros to mark types changing their size, like intptr_t.

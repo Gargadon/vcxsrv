@@ -41,6 +41,10 @@ CSRCS += pixman-mmx.c
 DEFINES+=USE_X86_MMX
 endif
 
-# sse2 code
+# sse2 code (x86/x64 only; ARM64 uses the generic implementation)
+ifeq ($(ARM64),1)
+DEFINES+=PIXMAN_API=
+else
 CSRCS += pixman-sse2.c
 DEFINES+=USE_SSE2 PIXMAN_API=
+endif

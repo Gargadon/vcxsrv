@@ -272,7 +272,7 @@ KEYSYMDEF = $(MHMAKECONF)/X11/keysymdef.h
 
 load_makefile util\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 
-$(OBJDIR)\ks_tables.h: $(KEYSYMDEF) util\$(OBJDIR)\makekeys.exe
-	util\$(OBJDIR)\makekeys $(relpath $<) > $(relpath $@)
+$(OBJDIR)\ks_tables.h: $(KEYSYMDEF) hosttools\makekeys.exe
+	hosttools\makekeys $(relpath $<) > $(relpath $@)
 
 

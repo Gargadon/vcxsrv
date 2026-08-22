@@ -5,7 +5,7 @@ OBJS:=$(OBJS:%.masm=$(OBJDIR)$/%$(OBJEXT))
 
 RESOBJS:=$(RESOURCES:%.rc=$(OBJDIR)$/%.res)
 
-ifdef SUBDIRS
+ifneq ($(strip $(SUBDIRS)),)
 load_makefile $(SUBDIRS:%=%\makefile MAKESERVER=$(MAKESERVER) DEBUG=$(DEBUG);)
 all: $(SUBDIRS:%=%\all)
 endif

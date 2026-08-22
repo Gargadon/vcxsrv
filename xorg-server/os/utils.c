@@ -66,7 +66,7 @@ __stdcall unsigned long GetTickCount(void);
 #include <X11/Xos.h>
 #include <stdio.h>
 #include <time.h>
-#if !defined(WIN32) || !defined(__MINGW32__)
+#if !defined(WIN32) || (!defined(__MINGW32__) && !defined(_MSC_VER))
 #include <sys/time.h>
 #include <sys/resource.h>
 #endif
@@ -504,7 +504,7 @@ ProcessCommandLine(int argc, char *argv[])
                 UseMsg();
         }
         else if (strcmp(argv[i], "-core") == 0) {
-#if !defined(WIN32) || !defined(__MINGW32__)
+#if !defined(WIN32) || (!defined(__MINGW32__) && !defined(_MSC_VER))
             struct rlimit core_limit;
 
             getrlimit(RLIMIT_CORE, &core_limit);

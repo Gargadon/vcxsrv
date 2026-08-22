@@ -40,6 +40,14 @@ def escapepath(val):
       newpath.append(path)
   return ":".join(newpath) 
 
+def exportvalue(var,val):
+  # PATH is consumed by the POSIX tools in this build.  MSVC's INCLUDE,
+  # LIB and LIBPATH variables, however, must remain Windows-style
+  # semicolon-separated lists when cl.exe is launched from Cygwin.
+  if var.lower() in ("include", "lib", "libpath"):
+    return escape(val)
+  return escapepath(val)
+
 env_before=readenv("env_before.txt")
 env_after=readenv("env_after.txt")
 os.remove("env_before.txt")
@@ -48,7 +56,7 @@ os.remove("env_after.txt")
 wslenv="Path/l:PATH/l"
 for var,val in env_after.items():
   if not var in env_before:
-    print("export %s=%s"%(var,escapepath(val)))
+    print("export %s=%s"%(var,exportvalue(var,val)))
     wslenv+=":"+var+"/l"
   else:
     oldval=env_before[var]
@@ -60,6 +68,6 @@ for var,val in env_after.items():
         #print oldval
         #print val
       else:
-        print("export PATH=%s"%(escapepath(val)))
+        print("export PATH=%s"%(exportvalue(var,val)))
 print("export WSLENV="+wslenv)
 

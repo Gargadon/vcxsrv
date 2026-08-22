@@ -33,6 +33,9 @@ from The Open Group.
 #endif
 
 #include "win.h"
+#ifndef ETCX11DIR
+#define ETCX11DIR "."
+#endif
 
 #include "dix/dix_priv.h"
 #include "dix/screenint_priv.h"

@@ -72,17 +72,8 @@ load_makefile fonts.src\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 load_makefile xkeyboard-config\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 
 EXTRASTOBUILD =  \
- hw\xwin\xlaunch\$(NOSERVOBJDIR)\xlaunch.exe \
  ..\xkbcomp\$(NOSERVOBJDIR)\xkbcomp.exe \
- ..\apps\xcalc\$(NOSERVOBJDIR)\xcalc.exe \
- ..\apps\xclock\$(NOSERVOBJDIR)\xclock.exe \
- ..\apps\xwininfo\$(NOSERVOBJDIR)\xwininfo.exe \
- ..\apps\xhost\$(NOSERVOBJDIR)\xhost.exe \
- ..\apps\xrdb\$(NOSERVOBJDIR)\xrdb.exe \
- ..\apps\xauth\$(NOSERVOBJDIR)\xauth.exe \
- ..\tools\plink\$(NOSERVOBJDIR)\plink.exe \
- hw\xwin\swrastwgl_dri\$(NOSERVOBJDIR)\swrastwgl_dri.dll \
- ..\dxtn\$(NOSERVOBJDIR)\dxtn.dll
+ hw\xwin\swrastwgl_dri\$(NOSERVOBJDIR)\swrastwgl_dri.dll
 
 EXTRASTOBUILDDIRS=$(dir $(EXTRASTOBUILD))
 
@@ -92,5 +83,9 @@ all: $(EXTRASTOBUILD)
 load_makefile $(MHMAKECONF)\mesalib\src\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 all: $(MHMAKECONF)\mesalib\src\$(NOSERVOBJDIR)\swrast_dri.lib $(MHMAKECONF)\mesalib\src\$(NOSERVOBJDIR)\swrast_dri.dll
 
+ifeq ($(ARM64),1)
+all: fonts.src\all
+else
 all: fonts.src\all xkeyboard-config\all
+endif
 

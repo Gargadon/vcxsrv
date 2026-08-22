@@ -10,9 +10,15 @@ ifneq ($(DIRFILE),)
 PATH:=$(relpath $(MHMAKECONF)\libxcb\src\$(OBJDIR))\;$(relpath $(MHMAKECONF)\libX11\$(OBJDIR))\;$(relpath $(MHMAKECONF)\libXau\$(OBJDIR))\;$(PATH)
 export PATH
 
+ifeq ($(ARM64),1)
+XKBCOMP_HOST=$(MHMAKECONF)\hosttools\xkbcomp.exe
+else
+XKBCOMP_HOST=..\..\..\xkbcomp\$(NOSERVOBJDIR)\xkbcomp.exe
 load_makefile ..\..\..\xkbcomp\makefile MAKESERVER=0 DEBUG=$(DEBUG)
+endif
 
-$(DIRFILE): ..\..\..\xkbcomp\$(NOSERVOBJDIR)\xkbcomp.exe
+$(DIRFILE): $(XKBCOMP_HOST)
+	mkdir -p $(DESTDIR)
 	-del -e $@
-	cd $(DESTDIR) & ..\..\..\xkbcomp\$(NOSERVOBJDIR)\xkbcomp.exe -lfhlpR -o $(relpath $@) *
+	cd $(DESTDIR) & $(XKBCOMP_HOST) -lfhlpR -o $(relpath $@) *
 endif

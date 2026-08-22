@@ -3,9 +3,9 @@ setlocal
 
 cd "%~dp0"
 
-set BISON_PKGDATADIR=../tools/mhmake/src/bisondata
+set BISON_PKGDATADIR=
 
-c:\winflexbison\win_bison.exe %1 %2 %3
+..\tools\mhmake\win_bison.exe %1 %2 %3
 
 endlocal
 

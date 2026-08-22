@@ -8,7 +8,11 @@ UTIL_DIR = ..\font-util
 
 load_makefile $(UTIL_DIR)\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 
+ifeq ($(ARM64),1)
+UCS2ANY = $(MHMAKECONF)\hosttools\ucs2any.exe
+else
 UCS2ANY = $(UTIL_DIR)\$(OBJDIR)\ucs2any.exe
+endif
 
    # The following rule is to avoid parallel build problems
 .PHONY: buildtoolsfirst
@@ -17,6 +21,9 @@ buildtoolsfirst: $(BDFTOPCF) $(UCS2ANY)
 all: buildtoolsfirst
 
 DESTDIR=$(MHMAKECONF)\xorg-server\fonts\misc
+ifeq ($(ARM64),1)
+BDFTOPCF=$(MHMAKECONF)\hosttools\bdftopcf.exe
+endif
 
 BDF2UCS_FONT_FILES = \
 	clR6x12 \
@@ -328,7 +335,11 @@ font_DATA = \
 
 all: $(DESTDIR) $(DESTDIR)\fonts.dir $(DESTDIR)\fonts.alias
 
+ifeq ($(ARM64),1)
+MKFONTSCALE=$(MHMAKECONF)\hosttools\mkfontscale.exe
+else
 MKFONTSCALE=$(MHMAKECONF)\mkfontscale\$(OBJDIR)\mkfontscale.exe
+endif
 
 load_makefile $(MHMAKECONF)\mkfontscale\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 
