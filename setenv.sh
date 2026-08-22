@@ -9,14 +9,23 @@ python setenv.py $1 > commands.sh
 sed -i 's#/mnt/c#/cygdrive/c#g' commands.sh
 chmod +x commands.sh
 source commands.sh
-if [[ "$1" == "1" ]] ; then
-export PATH=/cygdrive/c/Strawberry/perl/bin:/cygdrive/c/Qt/Tools/QtCreator/bin/jom:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/HostX64/arm64:$DIR/tools/mhmake:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/lib/wsl/lib:$DIR/tools/mhmake/Release64:$PATH:/cygdrive/c/gnuwin32/bin
-else
-export PATH=/cygdrive/c/Strawberry/perl/bin:/cygdrive/c/Qt/Tools/QtCreator/bin/jom:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/HostX64/arm64:$DIR/tools/mhmake:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/lib/wsl/lib:$DIR/tools/mhmake/Release:$PATH:/cygdrive/c/gnuwin32/bin
+JOM_DIR=/cygdrive/c/Qt/Tools/QtCreator/bin/jom
+if [[ -d "$JOM_DIR" ]]; then
+  export PATH="$JOM_DIR:$PATH"
 fi
+if [[ -d /cygdrive/c/Strawberry/perl/bin ]]; then
+  export PATH="/cygdrive/c/Strawberry/perl/bin:$PATH"
+fi
+export PATH="$DIR/tools/mhmake:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:$DIR/tools/mhmake/Release64:$PATH:/cygdrive/c/gnuwin32/bin"
 rm -f commands.sh
 export MHMAKECONF=$(cygpath -w "$DIR")
-export PYTHON3=$(cygpath -w /cygdrive/c/Python39/python.exe)
+if [[ -z "$PYTHON3" ]]; then
+  if [[ -x /cygdrive/c/Python39/python.exe ]]; then
+    export PYTHON3=$(cygpath -w /cygdrive/c/Python39/python.exe)
+  else
+    export PYTHON3=$(cygpath -w "$(command -v python.exe)")
+  fi
+fi
 export IS64=$1
 export ARM64=1
 

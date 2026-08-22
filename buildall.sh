@@ -32,6 +32,15 @@ BUILDDEPS=1
 if [[ "$4" == "N" ]] ; then
 BUILDDEPS=0
 fi
+
+# OpenSSL's generated makefiles work with either jom or nmake. jom is faster,
+# but nmake keeps the build reproducible on clean CI runners that do not have
+# Qt Creator installed.
+if command -v jom.exe >/dev/null 2>&1; then
+  MAKE_OPENSSL=(jom.exe "/J$2")
+else
+  MAKE_OPENSSL=(nmake.exe)
+fi
 function check-error {
     errorcode=$?
     if [[ $errorcode != 0 ]]; then
@@ -102,7 +111,7 @@ if [[ "$BUILDRELEASE" == "1" ]] ; then
 	fi
 	check-error 'Error executing perl'
 
-	jom.exe /J$2
+	"${MAKE_OPENSSL[@]}"
 	check-error 'Error compiling openssl for release'
 
 	cd ../..
@@ -125,7 +134,7 @@ if [[ "$BUILDDEBUG" == "1" ]] ; then
 	fi
 	check-error 'Error executing perl'
 
-	jom.exe /J$2
+	"${MAKE_OPENSSL[@]}"
 	check-error 'Error compiling openssl for debug'
 
 	cd ../..

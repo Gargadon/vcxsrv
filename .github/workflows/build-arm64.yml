@@ -1,0 +1,66 @@
+name: Build VcXsrv ARM64
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-arm64:
+    runs-on: windows-2025
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install native build prerequisites
+        shell: pwsh
+        run: |
+          choco install strawberryperl nasm -y --no-progress
+
+      - name: Install Cygwin build tools
+        uses: cygwin/cygwin-install-action@master
+        with:
+          packages: bison,flex,gawk,gperf,gzip,nasm,patch,perl,python39,python39-lxml,sed
+
+      - name: Enable MSVC ARM64 toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64_arm64
+
+      - name: Build VcXsrv
+        shell: C:\cygwin64\bin\bash.exe --login -eo pipefail '{0}'
+        run: |
+          export SHELLOPTS
+          set -o igncr
+          ./buildall.sh 1 2 R
+
+      - name: Create standalone package
+        shell: C:\cygwin64\bin\bash.exe --login -eo pipefail '{0}'
+        run: |
+          export SHELLOPTS
+          set -o igncr
+          cd xorg-server/installer
+          bash mkzip-arm64.sh
+
+      - name: Extract package for BanchoXterm
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist\vcxsrv-arm64 -Force | Out-Null
+          tar -xzf xorg-server\installer\vcxsrv-arm64.21.1.16.1.portable.tar.gz -C dist\vcxsrv-arm64
+          Compress-Archive -Path dist\vcxsrv-arm64\* -DestinationPath vcxsrv-windows-arm64.zip
+
+      - name: Upload standalone ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: vcxsrv-windows-arm64
+          path: vcxsrv-windows-arm64.zip
+
+      - name: Publish release asset
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: vcxsrv-windows-arm64.zip
