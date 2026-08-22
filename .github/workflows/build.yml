@@ -45,11 +45,13 @@ jobs:
           arch: ${{ matrix.msvc_arch }}
 
       - name: Build VcXsrv
-        shell: C:\cygwin64\bin\bash.exe --login -eo pipefail '{0}'
+        shell: pwsh
         run: |
-          export SHELLOPTS
-          set -o igncr
-          ./buildall.sh 1 2 R x ${{ matrix.build_arch }} NOPACKAGE
+          $bash = 'C:\cygwin64\bin\bash.exe'
+          $repo = (& 'C:\cygwin64\bin\cygpath.exe' -u $env:GITHUB_WORKSPACE).Trim()
+          $command = "cd '$repo' && export SHELLOPTS && set -o igncr && ./buildall.sh 1 2 R x ${{ matrix.build_arch }} NOPACKAGE"
+          & $bash --login -eo pipefail -c $command
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Stage MSVC runtime
         shell: pwsh
@@ -64,16 +66,18 @@ jobs:
           Copy-Item "$runtime\msvcp140.dll" "xorg-server\installer\" -Force
 
       - name: Create standalone package
-        shell: C:\cygwin64\bin\bash.exe --login -eo pipefail '{0}'
+        shell: pwsh
         run: |
-          export SHELLOPTS
-          set -o igncr
-          cd xorg-server/installer
-          if [[ '${{ matrix.name }}' == 'arm64' ]]; then
-            bash mkzip-arm64.sh
-          else
-            bash mkzip-64.sh
-          fi
+          $bash = 'C:\cygwin64\bin\bash.exe'
+          $repo = (& 'C:\cygwin64\bin\cygpath.exe' -u $env:GITHUB_WORKSPACE).Trim()
+          if ('${{ matrix.name }}' -eq 'arm64') {
+            $packageCommand = 'bash mkzip-arm64.sh'
+          } else {
+            $packageCommand = 'bash mkzip-64.sh'
+          }
+          $command = "cd '$repo/xorg-server/installer' && export SHELLOPTS && set -o igncr && $packageCommand"
+          & $bash --login -eo pipefail -c $command
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Extract and create ZIP
         shell: pwsh
