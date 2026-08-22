@@ -47,8 +47,13 @@ jobs:
       - name: Build VcXsrv
         shell: pwsh
         run: |
-          $bash = 'C:\cygwin64\bin\bash.exe'
-          $repo = (& 'C:\cygwin64\bin\cygpath.exe' -u $env:GITHUB_WORKSPACE).Trim()
+          $cygwinRoot = @('D:\cygwin', 'C:\cygwin64', 'C:\cygwin') |
+            Where-Object { Test-Path (Join-Path $_ 'bin\bash.exe') } |
+            Select-Object -First 1
+          if (-not $cygwinRoot) { throw 'Cygwin bash.exe was not found' }
+          $bash = Join-Path $cygwinRoot 'bin\bash.exe'
+          $cygpath = Join-Path $cygwinRoot 'bin\cygpath.exe'
+          $repo = (& $cygpath -u $env:GITHUB_WORKSPACE).Trim()
           $command = "cd '$repo' && export SHELLOPTS && set -o igncr && ./buildall.sh 1 2 R x ${{ matrix.build_arch }} NOPACKAGE"
           & $bash --login -eo pipefail -c $command
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -68,8 +73,13 @@ jobs:
       - name: Create standalone package
         shell: pwsh
         run: |
-          $bash = 'C:\cygwin64\bin\bash.exe'
-          $repo = (& 'C:\cygwin64\bin\cygpath.exe' -u $env:GITHUB_WORKSPACE).Trim()
+          $cygwinRoot = @('D:\cygwin', 'C:\cygwin64', 'C:\cygwin') |
+            Where-Object { Test-Path (Join-Path $_ 'bin\bash.exe') } |
+            Select-Object -First 1
+          if (-not $cygwinRoot) { throw 'Cygwin bash.exe was not found' }
+          $bash = Join-Path $cygwinRoot 'bin\bash.exe'
+          $cygpath = Join-Path $cygwinRoot 'bin\cygpath.exe'
+          $repo = (& $cygpath -u $env:GITHUB_WORKSPACE).Trim()
           if ('${{ matrix.name }}' -eq 'arm64') {
             $packageCommand = 'bash mkzip-arm64.sh'
           } else {
