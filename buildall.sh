@@ -72,6 +72,10 @@ if ! "$PERL_NATIVE" -e 'exit($^O eq "MSWin32" ? 0 : 1)' >/dev/null 2>&1; then
     echo 'The active perl.exe is not Strawberry Perl for Windows'
     exit 1
 fi
+if [[ "$(type -P link.exe 2>/dev/null)" == */usr/bin/link.exe ]]; then
+    echo 'The active link.exe is the Cygwin linker; MSVC link.exe must precede /usr/bin'
+    exit 1
+fi
 
 # echo script lines from now one
 #set -v

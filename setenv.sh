@@ -44,7 +44,10 @@ fi
 if [[ -d /cygdrive/c/Strawberry/perl/bin ]]; then
   export PATH="/cygdrive/c/Strawberry/perl/bin:$PATH"
 fi
-export PATH="$DIR/tools/mhmake:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:$DIR/tools/mhmake/Release64:$PATH:/cygdrive/c/gnuwin32/bin"
+# Keep the MSVC paths imported by vcvarsall before Cygwin's /usr/bin. In
+# particular, OpenSSL invokes `link` by name and Cygwin also provides a
+# different executable with that name.
+export PATH="$DIR/tools/mhmake:$DIR/tools/mhmake/Release64:$PATH:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/cygdrive/c/gnuwin32/bin"
 rm -f commands.sh
 export MHMAKECONF=$(cygpath -w "$DIR")
 if [[ -z "$PYTHON3" ]]; then
