@@ -4,6 +4,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 add_strawberry_perl() {
   local perl_exe perl_path perl_dir
+  for perl_path in \
+    /cygdrive/c/Strawberry/perl/bin/perl.exe \
+    /cygdrive/c/ProgramData/chocolatey/lib/strawberryperl/tools/perl/bin/perl.exe; do
+    if [[ -x "$perl_path" ]]; then
+      perl_dir=$(dirname "$perl_path")
+      export PATH="$perl_dir:$PATH"
+      export PERL_NATIVE="$perl_path"
+      return
+    fi
+  done
   perl_exe=$(cmd.exe /c where perl.exe 2>/dev/null | tr -d '\r' | grep -i strawberry | head -n 1)
   if [[ -n "$perl_exe" ]]; then
     perl_path=$(cygpath -u "$perl_exe")
