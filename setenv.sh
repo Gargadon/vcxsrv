@@ -9,10 +9,15 @@ add_strawberry_perl() {
     perl_path=$(cygpath -u "$perl_exe")
     perl_dir=$(dirname "$perl_path")
     export PATH="$perl_dir:$PATH"
+    export PERL_NATIVE="$perl_path"
   fi
 }
 
 add_strawberry_perl
+if [[ -z "$PERL_NATIVE" ]]; then
+  echo 'Strawberry Perl was not found through where.exe' >&2
+  exit 1
+fi
 
 rm -f commands.sh
 python setenv.py $1 > commands.sh

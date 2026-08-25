@@ -64,9 +64,11 @@ which python.exe > /dev/null 2>&1
 check-error 'Make sure that python.exe is in the PATH. (e.g. cp /usr/bin/python2.7.exe /usr/bin/python.exe)'
 
 # c:\perl should have a copy of strawberry perl portable edition
-which perl.exe > /dev/null 2>&1
-check-error 'Please install strawberry perl portable edition into c:\perl'
-if ! perl.exe -e 'exit($^O eq "MSWin32" ? 0 : 1)' >/dev/null 2>&1; then
+if [[ -z "${PERL_NATIVE:-}" ]]; then
+    echo 'Please install Strawberry Perl for Windows'
+    exit 1
+fi
+if ! "$PERL_NATIVE" -e 'exit($^O eq "MSWin32" ? 0 : 1)' >/dev/null 2>&1; then
     echo 'The active perl.exe is not Strawberry Perl for Windows'
     exit 1
 fi
@@ -116,7 +118,7 @@ if [[ "$BUILDRELEASE" == "1" ]] ; then
 		fi
 		cd release64
 
-		perl.exe ../Configure $OPENSSL_CONFIG --release
+		"$PERL_NATIVE" ../Configure $OPENSSL_CONFIG --release
 	else
 
 		if [[ ! -d "release32" ]]; then
@@ -141,7 +143,7 @@ if [[ "$BUILDDEBUG" == "1" ]] ; then
 		  mkdir debug64
 		fi
 		cd debug64
-		perl.exe ../Configure $OPENSSL_CONFIG --debug
+		"$PERL_NATIVE" ../Configure $OPENSSL_CONFIG --debug
 	else
 		if [[ ! -d "debug32" ]]; then
 		  mkdir debug32
