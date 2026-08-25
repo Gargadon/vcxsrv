@@ -1,0 +1,27 @@
+Building C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\mesalib\src\util\objARM64\release\blake3_neon.obj
+blake3_neon.c
+Building C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\mesalib\src\util\objARM64\release\u_format_unpack_neon.obj
+u_format_unpack_neon.c
+Building C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\mesalib\src\util\objARM64\release\libutil.lib
+Building C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\mesalib\src\objARM64\release\swrast_dri.lib
+   Creando biblioteca objARM64\release\swrast_dri.lib y objeto objARM64\release\swrast_dri.exp
+cp: cannot stat 'C:\Program Files\Microsoft Visual Studio\18\Community\VC\Redist\MSVC\14.51.36231\/x64/Microsoft.VC143.CRT/msvcp140.dll': No such file or directory
+cp: cannot stat 'C:\Program Files\Microsoft Visual Studio\18\Community\VC\Redist\MSVC\14.51.36231\/x64/Microsoft.VC143.CRT/vcruntime140.dll': No such file or directory
+cp: cannot stat 'C:\Program Files\Microsoft Visual Studio\18\Community\VC\Redist\MSVC\14.51.36231\/x64/Microsoft.VC143.CRT/vcruntime140_1.dll': No such file or directory
+cp: cannot stat 'C:\Program Files\Microsoft Visual Studio\18\Community\VC\Redist\MSVC\14.51.36231\/debug_nonredist/x64/Microsoft.VC143.DebugCRT/msvcp140d.dll': No such file or directory
+cp: cannot stat 'C:\Program Files\Microsoft Visual Studio\18\Community\VC\Redist\MSVC\14.51.36231\/debug_nonredist/x64/Microsoft.VC143.DebugCRT/vcruntime140d.dll': No such file or directory
+cp: cannot stat 'C:\Program Files\Microsoft Visual Studio\18\Community\VC\Redist\MSVC\14.51.36231\/debug_nonredist/x64/Microsoft.VC143.DebugCRT/vcruntime140_1d.dll': No such file or directory
+patching file vcxsrv-64-debug.nsi
+Assertation failed!
+
+Program: C:\Strawberry\c\bin\patch.exe
+File: .\src\patch\2.5.9\patch-2.5.9-src\patch.c, Line 354
+
+Expression: hunk
+patching file vcxsrv-64-debug.nsi
+Assertation failed!
+
+Program: C:\Strawberry\c\bin\patch.exe
+File: .\src\patch\2.5.9\patch-2.5.9-src\patch.c, Line 354
+
+Expression: hunk

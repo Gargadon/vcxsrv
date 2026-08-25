@@ -1,0 +1,145 @@
+Versión de MSBuild 18.8.2+ce25c0108 para .NET Framework
+Compilación iniciada a las 22/08/2026 11:34:32 a. m..
+
+
+     1>Proyecto "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\MSBuild.sln" en el nodo 1 (Build destinos).
+     1>ValidateSolutionConfiguration:
+         Compilando la configuración de soluciones "Release|ARM64".
+     1>El proyecto "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\MSBuild.sln" (1) está compilando "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj" (2) en el nodo 1 (destinos predeterminados).
+     2>PrepareForBuild:
+         La salida estructurada está habilitada. El formato del diagnóstico del compilador reflejará la jerarquía de errores. Consulte https://aka.ms/cpp/structured-output para obtener más detalles.
+       InitializeBuildStatus:
+         Aplicando tarea Touch a "..\..\..\objs\ARM64\Release\freetype.tlog\unsuccessfulbuild".
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\arm64\CL.exe /c /I..\..\..\include /Zi /nologo /W4 /WX- /diagnostics:column /MP /O2 /Ob2 /Oi /Oy- /D WIN32 /D NDEBUG /D _LIB /D _CRT_SECURE_NO_WARNINGS /D FT2_BUILD_LIBRARY /D DLL_EXPORT /D _ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1 /D _WINDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Za /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"..\..\..\objs\ARM64\Release\\" /Fd"..\..\..\objs\ARM64\Release\vc145.pdb" /external:W4 /Gd /TC /wd4001 /wd4267 /analyze- /FC /errorReport:queue ..\..\..\src\autofit\autofit.c ..\..\..\src\base\ftbase.c ..\..\..\src\base\ftbbox.c ..\..\..\src\base\ftbdf.c ..\..\..\src\base\ftbitmap.c ..\..\..\src\base\ftcid.c ..\..\..\src\base\ftfstype.c ..\..\..\src\base\ftgasp.c ..\..\..\src\base\ftglyph.c ..\..\..\src\base\ftgxval.c ..\..\..\src\base\ftinit.c ..\..\..\src\base\ftmm.c ..\..\..\src\base\ftotval.c ..\..\..\src\base\ftpatent.c ..\..\..\src\base\ftpfr.c ..\..\..\src\base\ftstroke.c ..\..\..\src\base\ftsynth.c ..\..\..\src\base\fttype1.c ..\..\..\src\base\ftwinfnt.c ..\..\..\src\bdf\bdf.c ..\..\..\src\cache\ftcache.c ..\..\..\src\cff\cff.c ..\..\..\src\cid\type1cid.c ..\..\..\src\dlg\dlgwrap.c ..\..\..\src\gzip\ftgzip.c ..\..\..\src\lzw\ftlzw.c ..\..\..\src\pcf\pcf.c ..\..\..\src\pfr\pfr.c ..\..\..\src\psaux\psaux.c ..\..\..\src\pshinter\pshinter.c ..\..\..\src\psnames\psmodule.c ..\..\..\src\raster\raster.c ..\..\..\src\sfnt\sfnt.c ..\..\..\src\smooth\smooth.c ..\..\..\src\sdf\sdf.c ..\..\..\src\svg\svg.c ..\..\..\src\truetype\truetype.c ..\..\..\src\type1\type1.c ..\..\..\src\type42\type42.c ..\..\..\src\winfonts\winfnt.c
+         autofit.c
+         ftbase.c
+         ftbbox.c
+         ftbdf.c
+         ftbitmap.c
+         ftcid.c
+         ftfstype.c
+         ftgasp.c
+         ftglyph.c
+         ftgxval.c
+         ftinit.c
+         ftmm.c
+         ftotval.c
+         ftpatent.c
+         ftpfr.c
+         ftstroke.c
+         ftsynth.c
+         fttype1.c
+         ftwinfnt.c
+         bdf.c
+         ftcache.c
+         cff.c
+         type1cid.c
+         dlgwrap.c
+         ftgzip.c
+         ftlzw.c
+         pcf.c
+         pfr.c
+         psaux.c
+         pshinter.c
+         psmodule.c
+         raster.c
+         sfnt.c
+         smooth.c
+         sdf.c
+         svg.c
+     2>C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\src\sfnt\sfdriver.c(1036,36): warning C4244: 'función': conversión de '__int64' a 'const unsigned int'; posible pérdida de datos [C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj]
+         (compilando archivo de origen "../../../src/sfnt/sfnt.c")
+         
+         truetype.c
+         type1.c
+     2>C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\src\type1\t1load.c(1780,64): warning C4244: '=': conversión de '__int64' a 'FT_Int'; posible pérdida de datos [C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj]
+         (compilando archivo de origen "../../../src/type1/type1.c")
+         
+     2>C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\src\type1\t1load.c(1953,36): warning C4244: '=': conversión de '__int64' a 'FT_Int'; posible pérdida de datos [C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj]
+         (compilando archivo de origen "../../../src/type1/type1.c")
+         
+         type42.c
+     2>C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\src\type42\t42parse.c(878,62): warning C4244: '=': conversión de '__int64' a 'FT_Int'; posible pérdida de datos [C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj]
+         (compilando archivo de origen "../../../src/type42/type42.c")
+         
+         winfnt.c
+         C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\arm64\CL.exe /c /I..\..\..\include /Zi /nologo /W4 /WX- /diagnostics:column /MP /O2 /Ob2 /Oi /Oy- /D WIN32 /D NDEBUG /D _LIB /D _CRT_SECURE_NO_WARNINGS /D FT2_BUILD_LIBRARY /D DLL_EXPORT /D _ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1 /D _WINDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"..\..\..\objs\ARM64\Release\\" /Fd"..\..\..\objs\ARM64\Release\vc145.pdb" /external:W4 /Gd /TC /wd4001 /wd4267 /analyze- /FC /errorReport:queue ..\ftdebug.c ..\ftsystem.c
+         ftdebug.c
+         ftsystem.c
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\rc.exe /D NDEBUG /D DLL_EXPORT /l"0x0409" /nologo /fo"..\..\..\objs\ARM64\Release\ftver.res" ..\..\..\src\base\ftver.rc 
+       Link:
+         C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\arm64\link.exe /ERRORREPORT:QUEUE /OUT:"..\..\..\objs\ARM64\Release\freetype.dll" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG:FULL /PDB:"..\..\..\objs\ARM64\Release\freetype.pdb" /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"..\..\..\objs\ARM64\Release\freetype.lib" /MACHINE:ARM64 /DLL ..\..\..\objs\ARM64\Release\ftver.res
+         ..\..\..\objs\ARM64\Release\autofit.obj
+         ..\..\..\objs\ARM64\Release\ftbase.obj
+         ..\..\..\objs\ARM64\Release\ftbbox.obj
+         ..\..\..\objs\ARM64\Release\ftbdf.obj
+         ..\..\..\objs\ARM64\Release\ftbitmap.obj
+         ..\..\..\objs\ARM64\Release\ftcid.obj
+         ..\..\..\objs\ARM64\Release\ftfstype.obj
+         ..\..\..\objs\ARM64\Release\ftgasp.obj
+         ..\..\..\objs\ARM64\Release\ftglyph.obj
+         ..\..\..\objs\ARM64\Release\ftgxval.obj
+         ..\..\..\objs\ARM64\Release\ftinit.obj
+         ..\..\..\objs\ARM64\Release\ftmm.obj
+         ..\..\..\objs\ARM64\Release\ftotval.obj
+         ..\..\..\objs\ARM64\Release\ftpatent.obj
+         ..\..\..\objs\ARM64\Release\ftpfr.obj
+         ..\..\..\objs\ARM64\Release\ftstroke.obj
+         ..\..\..\objs\ARM64\Release\ftsynth.obj
+         ..\..\..\objs\ARM64\Release\fttype1.obj
+         ..\..\..\objs\ARM64\Release\ftwinfnt.obj
+         ..\..\..\objs\ARM64\Release\bdf.obj
+         ..\..\..\objs\ARM64\Release\ftcache.obj
+         ..\..\..\objs\ARM64\Release\cff.obj
+         ..\..\..\objs\ARM64\Release\type1cid.obj
+         ..\..\..\objs\ARM64\Release\dlgwrap.obj
+         ..\..\..\objs\ARM64\Release\ftgzip.obj
+         ..\..\..\objs\ARM64\Release\ftlzw.obj
+         ..\..\..\objs\ARM64\Release\pcf.obj
+         ..\..\..\objs\ARM64\Release\pfr.obj
+         ..\..\..\objs\ARM64\Release\psaux.obj
+         ..\..\..\objs\ARM64\Release\pshinter.obj
+         ..\..\..\objs\ARM64\Release\psmodule.obj
+         ..\..\..\objs\ARM64\Release\raster.obj
+         ..\..\..\objs\ARM64\Release\sfnt.obj
+         ..\..\..\objs\ARM64\Release\smooth.obj
+         ..\..\..\objs\ARM64\Release\sdf.obj
+         ..\..\..\objs\ARM64\Release\svg.obj
+         ..\..\..\objs\ARM64\Release\truetype.obj
+         ..\..\..\objs\ARM64\Release\type1.obj
+         ..\..\..\objs\ARM64\Release\type42.obj
+         ..\..\..\objs\ARM64\Release\winfnt.obj
+         ..\..\..\objs\ARM64\Release\ftdebug.obj
+         ..\..\..\objs\ARM64\Release\ftsystem.obj
+            Creando biblioteca ..\..\..\objs\ARM64\Release\freetype.lib y objeto ..\..\..\objs\ARM64\Release\freetype.exp
+         freetype.vcxproj -> C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\ARM64\Release\freetype.dll
+       AfterBuild:
+         Copiando el archivo de "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\ARM64\Release\freetype.pdb" en "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\freetype.pdb".
+         Copiando el archivo de "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\ARM64\Release\freetype.dll" en "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\freetype.dll".
+         Copiando el archivo de "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\ARM64\Release\freetype.lib" en "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\freetype.lib".
+         Copiando el archivo de "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\ARM64\Release\freetype.exp" en "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\freetype.exp".
+         Copiando el archivo de "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\ARM64\Release\freetype.dll.recipe" en "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\freetype.dll.recipe".
+         Creando directorio "..\..\..\..\freetype-demos\bin".
+         Copiando el archivo de "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\objs\ARM64\Release\freetype.dll" en "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype-demos\bin\freetype.dll".
+       FinalizeBuildStatus:
+         Se eliminará el archivo "..\..\..\objs\ARM64\Release\freetype.tlog\unsuccessfulbuild".
+         Aplicando tarea Touch a "..\..\..\objs\ARM64\Release\freetype.tlog\freetype.lastbuildstate".
+     2>Compilación del proyecto terminada "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj" (destinos predeterminados).
+     1>Compilación del proyecto terminada "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\MSBuild.sln" (Build destinos).
+
+Compilación correcta.
+
+       "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\MSBuild.sln" (Build destino) (1) ->
+       "C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj" (destino predeterminado) (2) ->
+       (ClCompile destino) -> 
+         C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\src\sfnt\sfdriver.c(1036,36): warning C4244: 'función': conversión de '__int64' a 'const unsigned int'; posible pérdida de datos [C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj]
+         C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\src\type1\t1load.c(1780,64): warning C4244: '=': conversión de '__int64' a 'FT_Int'; posible pérdida de datos [C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj]
+         C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\src\type1\t1load.c(1953,36): warning C4244: '=': conversión de '__int64' a 'FT_Int'; posible pérdida de datos [C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj]
+         C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\src\type42\t42parse.c(878,62): warning C4244: '=': conversión de '__int64' a 'FT_Int'; posible pérdida de datos [C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\freetype\builds\windows\vc2010\freetype.vcxproj]
+
+    4 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:10.85
