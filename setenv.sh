@@ -2,6 +2,18 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+add_strawberry_perl() {
+  local perl_exe perl_path perl_dir
+  perl_exe=$(cmd.exe /c where perl.exe 2>/dev/null | tr -d '\r' | grep -i strawberry | head -n 1)
+  if [[ -n "$perl_exe" ]]; then
+    perl_path=$(cygpath -u "$perl_exe")
+    perl_dir=$(dirname "$perl_path")
+    export PATH="$perl_dir:$PATH"
+  fi
+}
+
+add_strawberry_perl
+
 rm -f commands.sh
 python setenv.py $1 > commands.sh
 # The upstream script targets WSL and emits /mnt/c paths. This build runs in
@@ -9,6 +21,7 @@ python setenv.py $1 > commands.sh
 sed -i 's#/mnt/c#/cygdrive/c#g' commands.sh
 chmod +x commands.sh
 source commands.sh
+add_strawberry_perl
 JOM_DIR=/cygdrive/c/Qt/Tools/QtCreator/bin/jom
 if [[ -d "$JOM_DIR" ]]; then
   export PATH="$JOM_DIR:$PATH"

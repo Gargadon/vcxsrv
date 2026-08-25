@@ -66,6 +66,10 @@ check-error 'Make sure that python.exe is in the PATH. (e.g. cp /usr/bin/python2
 # c:\perl should have a copy of strawberry perl portable edition
 which perl.exe > /dev/null 2>&1
 check-error 'Please install strawberry perl portable edition into c:\perl'
+if ! perl.exe -e 'exit($^O eq "MSWin32" ? 0 : 1)' >/dev/null 2>&1; then
+    echo 'The active perl.exe is not Strawberry Perl for Windows'
+    exit 1
+fi
 
 # echo script lines from now one
 #set -v
