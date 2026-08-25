@@ -32,7 +32,18 @@ jobs:
 
       - name: Install native build prerequisites
         shell: pwsh
-        run: choco install strawberryperl nasm -y --no-progress
+        run: |
+          choco install strawberryperl nasm -y --no-progress
+          $perlCandidates = @(
+            'C:\Strawberry\perl\bin',
+            'C:\ProgramData\chocolatey\lib\strawberryperl\tools\perl\bin'
+          )
+          $perlDir = $perlCandidates |
+            Where-Object { Test-Path (Join-Path $_ 'perl.exe') } |
+            Select-Object -First 1
+          if (-not $perlDir) { throw 'Strawberry Perl was installed but perl.exe was not found' }
+          Add-Content -Path $env:GITHUB_PATH -Value $perlDir
+          Write-Host "Using Strawberry Perl from $perlDir"
 
       - name: Install Cygwin build tools
         uses: cygwin/cygwin-install-action@master
