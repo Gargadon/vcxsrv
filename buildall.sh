@@ -77,6 +77,37 @@ if [[ "$(type -P link.exe 2>/dev/null)" == */usr/bin/link.exe ]]; then
     exit 1
 fi
 
+# Generate mhmake's Flex/Bison sources from the Cygwin shell. The Visual
+# Studio project invokes the batch files through cmd.exe, which can mix the
+# Cygwin and native m4/Bison installations while expanding the vendored
+# C++ skeleton. Keeping generation here makes the host build deterministic.
+generate_mhmake_sources() {
+    local output_dir="$1"
+
+    command -v flex >/dev/null 2>&1 || {
+        echo 'Please install Cygwin flex'
+        exit 1
+    }
+    command -v bison >/dev/null 2>&1 || {
+        echo 'Please install Cygwin bison'
+        exit 1
+    }
+
+    pushd tools/mhmake >/dev/null || exit 1
+    mkdir -p "$output_dir"
+
+    flex --nounistd -Ssrc/flex.skl \
+        -o"$output_dir/mhmakelexer.cpp" src/mhmakelexer.l
+    python.exe addstdafxh.py "$output_dir/mhmakelexer.cpp"
+
+    BISON_PKGDATADIR=src/bisondata bison -d \
+        -Ssrc/bisondata/skeletons/lalr1.cc \
+        -o"$output_dir/mhmakeparser.cpp" src/mhmakeParser.y
+    python.exe addstdafxh.py "$output_dir/mhmakeparser.cpp"
+
+    popd >/dev/null || exit 1
+}
+
 # echo script lines from now one
 #set -v
 if [[ "$BUILDDEPS" == "1" ]] ; then
@@ -181,13 +212,15 @@ if [[ "$IS64" == "1" ]]; then
 
   if [[ "$BUILDDEPS" == "1" ]]; then
 
-  	if [[ "$BUILDRELEASE" == "1" ]]; then
+	if [[ "$BUILDRELEASE" == "1" ]]; then
+		generate_mhmake_sources Release64
   		MSBuild.exe tools/mhmake/mhmakevc10.sln -t:Build -p:Configuration=Release -p:Platform=x64 -m:$2
       wait
   		check-error 'Error compiling mhmake for release'
   	fi
 
-  	if [[ "$BUILDDEBUG" == "1" ]]; then
+	if [[ "$BUILDDEBUG" == "1" ]]; then
+		generate_mhmake_sources Debug64
   		MSBuild.exe tools/mhmake/mhmakevc10.sln -t:Build -p:Configuration=Debug -p:Platform=x64 -m:$2
       wait
   		check-error 'Error compiling mhmake for debug'
@@ -213,12 +246,14 @@ else
 
   if [[ "$BUILDDEPS" == "1" ]]; then
 
-  	if [[ "$BUILDRELEASE" == "1" ]]; then
+	if [[ "$BUILDRELEASE" == "1" ]]; then
+		generate_mhmake_sources Release
   		MSBuild.exe tools/mhmake/mhmakevc10.sln -t:Build -p:Configuration=Release -p:Platform=Win32 -m:$2
       wait
   		check-error 'Error compiling mhmake for release'
   	fi
-  	if [[ "$BUILDDEBUG" == "1" ]]; then
+	if [[ "$BUILDDEBUG" == "1" ]]; then
+		generate_mhmake_sources Debug
   		MSBuild.exe tools/mhmake/mhmakevc10.sln -t:Build -p:Configuration=Debug -p:Platform=Win32 -m:$2
       wait
   		check-error 'Error compiling mhmake for debug'
