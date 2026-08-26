@@ -77,10 +77,9 @@ if [[ "$(type -P link.exe 2>/dev/null)" == */usr/bin/link.exe ]]; then
     exit 1
 fi
 
-# Generate mhmake's Flex/Bison sources from the Cygwin shell. The Visual
-# Studio project invokes the batch files through cmd.exe, which can mix the
-# Cygwin and native m4/Bison installations while expanding the vendored
-# C++ skeleton. Keeping generation here makes the host build deterministic.
+# Generate mhmake's Flex/Bison sources from the Cygwin shell. Keep Bison and
+# M4 from the same Cygwin installation; the vendored skeleton uses private
+# %define extensions required by mhmake.
 generate_mhmake_sources() {
     local output_dir="$1"
 
@@ -100,9 +99,13 @@ generate_mhmake_sources() {
         -o"$output_dir/mhmakelexer.cpp" src/mhmakelexer.l
     python.exe addstdafxh.py "$output_dir/mhmakelexer.cpp"
 
-    BISON_PKGDATADIR=src/bisondata bison -d \
-        -Ssrc/bisondata/skeletons/lalr1.cc \
-        -o"$output_dir/mhmakeparser.cpp" src/mhmakeParser.y
+    local m4_bin
+    local bison_data
+    m4_bin="$(command -v m4)"
+    bison_data="$(pwd)/src/bisondata"
+    M4="$m4_bin" BISON_PKGDATADIR="$bison_data" bison -d \
+        -S"$bison_data/skeletons/lalr1.cc" \
+        -o"$output_dir/mhmakeparser.cpp" src/mhmakeparser.y
     python.exe addstdafxh.py "$output_dir/mhmakeparser.cpp"
 
     popd >/dev/null || exit 1
@@ -273,7 +276,5 @@ else
   fi
 
 fi
-
-
 
 
