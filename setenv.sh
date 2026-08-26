@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TARGET_ARCH="${2:-arm64}"
 
 add_strawberry_perl() {
   local perl_exe perl_path perl_dir
@@ -30,7 +31,7 @@ if [[ -z "$PERL_NATIVE" ]]; then
 fi
 
 rm -f commands.sh
-python setenv.py $1 > commands.sh
+python setenv.py $1 "$TARGET_ARCH" > commands.sh
 # The upstream script targets WSL and emits /mnt/c paths. This build runs in
 # Cygwin, whose Windows mount prefix is /cygdrive/c.
 sed -i 's#/mnt/c#/cygdrive/c#g' commands.sh
@@ -58,7 +59,6 @@ if [[ -z "$PYTHON3" ]]; then
   fi
 fi
 export IS64=$1
-TARGET_ARCH="${2:-arm64}"
 if [[ "$TARGET_ARCH" == "arm64" ]]; then
   export ARM64=1
 else

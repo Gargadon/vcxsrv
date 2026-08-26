@@ -4,7 +4,9 @@ import sys
 import subprocess
 
 if len(sys.argv)>1 and sys.argv[1]=="1":
-  p=subprocess.Popen(["cmd.exe", "/c", "setenv.bat","amd64"], stdout = subprocess.PIPE)
+  target_arch = sys.argv[2] if len(sys.argv)>2 else "arm64"
+  vcvars_arch = "amd64_arm64" if target_arch == "arm64" else "amd64"
+  p=subprocess.Popen(["cmd.exe", "/c", "setenv.bat", vcvars_arch], stdout = subprocess.PIPE)
 else:
   p=subprocess.Popen(["cmd.exe", "/c", "setenv.bat","x86"], stdout = subprocess.PIPE)
 p.communicate()
