@@ -33,7 +33,7 @@ jobs:
       - name: Install native build prerequisites
         shell: pwsh
         run: |
-          choco install strawberryperl nasm winflexbison3 -y --no-progress
+          choco install strawberryperl nasm -y --no-progress
           $perlCandidates = @(
             'C:\Strawberry\perl\bin',
             'C:\ProgramData\chocolatey\lib\strawberryperl\tools\perl\bin'
@@ -62,6 +62,7 @@ jobs:
             Where-Object { Test-Path (Join-Path $_ 'bin\bash.exe') } |
             Select-Object -First 1
           if (-not $cygwinRoot) { throw 'Cygwin bash.exe was not found' }
+          $env:CYGWIN_ROOT = $cygwinRoot
           $bash = Join-Path $cygwinRoot 'bin\bash.exe'
           $cygpath = Join-Path $cygwinRoot 'bin\cygpath.exe'
           $repo = (& $cygpath -u $env:GITHUB_WORKSPACE).Trim()
