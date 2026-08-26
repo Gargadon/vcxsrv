@@ -99,12 +99,8 @@ generate_mhmake_sources() {
         -o"$output_dir/mhmakelexer.cpp" src/mhmakelexer.l
     python.exe addstdafxh.py "$output_dir/mhmakelexer.cpp"
 
-    local m4_bin
-    local bison_data
-    m4_bin="$(command -v m4)"
-    bison_data="$(pwd)/src/bisondata"
-    M4="$m4_bin" BISON_PKGDATADIR="$bison_data" bison -d \
-        -S"$bison_data/skeletons/lalr1.cc" \
+    BISON_PKGDATADIR=src/bisondata bison -d \
+        -Slalr1.cc \
         -o"$output_dir/mhmakeparser.cpp" src/mhmakeparser.y
     python.exe addstdafxh.py "$output_dir/mhmakeparser.cpp"
 
@@ -276,5 +272,4 @@ else
   fi
 
 fi
-
 
