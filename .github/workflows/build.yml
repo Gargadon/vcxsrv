@@ -33,7 +33,7 @@ jobs:
       - name: Install native build prerequisites
         shell: pwsh
         run: |
-          choco install strawberryperl nasm -y --no-progress
+          choco install strawberryperl nasm winflexbison3 -y --no-progress
           $perlCandidates = @(
             'C:\Strawberry\perl\bin',
             'C:\ProgramData\chocolatey\lib\strawberryperl\tools\perl\bin'

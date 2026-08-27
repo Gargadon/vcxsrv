@@ -77,9 +77,9 @@ if [[ "$(type -P link.exe 2>/dev/null)" == */usr/bin/link.exe ]]; then
     exit 1
 fi
 
-# Generate mhmake's Flex/Bison sources from the Cygwin shell. Keep Bison and
-# M4 from the same Cygwin installation; the vendored skeleton uses private
-# %define extensions required by mhmake.
+# Generate mhmake's Flex/Bison sources from the Cygwin shell. mhmake's
+# vendored skeleton uses private %define extensions, so use win_bison rather
+# than Cygwin Bison (which rejects the skeleton during postprocessing).
 generate_mhmake_sources() {
     local output_dir="$1"
 
@@ -87,8 +87,8 @@ generate_mhmake_sources() {
         echo 'Please install Cygwin flex'
         exit 1
     }
-    command -v bison >/dev/null 2>&1 || {
-        echo 'Please install Cygwin bison'
+    command -v win_bison.exe >/dev/null 2>&1 || {
+        echo 'Please install win_bison.exe'
         exit 1
     }
 
@@ -99,8 +99,8 @@ generate_mhmake_sources() {
         -o"$output_dir/mhmakelexer.cpp" src/mhmakelexer.l
     python.exe addstdafxh.py "$output_dir/mhmakelexer.cpp"
 
-    BISON_PKGDATADIR=src/bisondata bison -d \
-        -Slalr1.cc \
+    BISON_PKGDATADIR=src/bisondata win_bison.exe -d \
+        -Ssrc/bisondata/skeletons/lalr1.cc \
         -o"$output_dir/mhmakeparser.cpp" src/mhmakeparser.y
     python.exe addstdafxh.py "$output_dir/mhmakeparser.cpp"
 
@@ -272,4 +272,3 @@ else
   fi
 
 fi
-
