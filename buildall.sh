@@ -87,11 +87,17 @@ generate_mhmake_sources() {
         echo 'Please install Cygwin flex'
         exit 1
     }
-    command -v win_bison.exe >/dev/null 2>&1 || {
+    local win_bison
+    if [[ -n "${WIN_BISON_PATH:-}" ]]; then
+        win_bison="$(cygpath -u "$WIN_BISON_PATH")"
+    else
+        win_bison="$(command -v win_bison.exe 2>/dev/null || true)"
+    fi
+    if [[ -z "$win_bison" || ! -f "$win_bison" ]]; then
         echo 'Please install win_bison.exe'
         exit 1
-    }
-    win_bison.exe --version | head -1
+    fi
+    "$win_bison" --version | head -1
 
     pushd tools/mhmake >/dev/null || exit 1
     mkdir -p "$output_dir"
@@ -100,7 +106,7 @@ generate_mhmake_sources() {
         -o"$output_dir/mhmakelexer.cpp" src/mhmakelexer.l
     python.exe addstdafxh.py "$output_dir/mhmakelexer.cpp"
 
-    BISON_PKGDATADIR=src/bisondata win_bison.exe -d \
+    BISON_PKGDATADIR=src/bisondata "$win_bison" -d \
         -Ssrc/bisondata/skeletons/lalr1.cc \
         -o"$output_dir/mhmakeparser.cpp" src/mhmakeparser.y
     python.exe addstdafxh.py "$output_dir/mhmakeparser.cpp"
