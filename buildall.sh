@@ -88,7 +88,9 @@ generate_mhmake_sources() {
         exit 1
     }
     local win_bison
-    if [[ -n "${WIN_BISON_PATH:-}" ]]; then
+    if [[ -f "./win_bison.exe" ]]; then
+        win_bison="$PWD/win_bison.exe"
+    elif [[ -n "${WIN_BISON_PATH:-}" ]]; then
         win_bison="$(cygpath -u "$WIN_BISON_PATH")"
     else
         win_bison="$(command -v win_bison.exe 2>/dev/null || true)"
