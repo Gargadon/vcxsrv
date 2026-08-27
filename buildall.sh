@@ -91,6 +91,7 @@ generate_mhmake_sources() {
         echo 'Please install win_bison.exe'
         exit 1
     }
+    win_bison.exe --version | head -1
 
     pushd tools/mhmake >/dev/null || exit 1
     mkdir -p "$output_dir"

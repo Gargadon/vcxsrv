@@ -33,7 +33,18 @@ jobs:
       - name: Install native build prerequisites
         shell: pwsh
         run: |
-          choco install strawberryperl nasm winflexbison3 -y --no-progress
+          choco install strawberryperl nasm -y --no-progress
+          $winFlexBisonVersion = '2.5.25'
+          $winFlexBisonZip = Join-Path $env:TEMP "win_flex_bison-$winFlexBisonVersion.zip"
+          $winFlexBisonDir = Join-Path $env:RUNNER_TEMP "win_flex_bison-$winFlexBisonVersion"
+          Invoke-WebRequest `
+            -Uri "https://github.com/lexxmark/winflexbison/releases/download/v$winFlexBisonVersion/win_flex_bison-$winFlexBisonVersion.zip" `
+            -OutFile $winFlexBisonZip
+          Expand-Archive -Path $winFlexBisonZip -DestinationPath $winFlexBisonDir -Force
+          $winBison = Get-ChildItem -Path $winFlexBisonDir -Filter 'win_bison.exe' -Recurse | Select-Object -First 1
+          if (-not $winBison) { throw "win_bison.exe was not found in $winFlexBisonDir" }
+          Add-Content -Path $env:GITHUB_PATH -Value $winBison.DirectoryName
+          & $winBison.FullName --version | Select-Object -First 1
           $perlCandidates = @(
             'C:\Strawberry\perl\bin',
             'C:\ProgramData\chocolatey\lib\strawberryperl\tools\perl\bin'
