@@ -50,7 +50,12 @@ fi
 # different executable with that name.
 export PATH="$DIR/tools/mhmake:$DIR/tools/mhmake/Release64:$PATH:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/cygdrive/c/gnuwin32/bin"
 rm -f commands.sh
-export MHMAKECONF=$(cygpath -w "$DIR")
+# buildall.sh is invoked from Cygwin, but the runner can also expose Git for
+# Windows' cygpath earlier in PATH.  That cygpath treats /cygdrive as a
+# relative path and produces C:\\Program Files\\Git\\cygdrive\\..., which
+# mhmake cannot compare with the real Windows checkout path.  Ask cmd for
+# the current Windows directory instead.
+export MHMAKECONF=$(cmd.exe /c cd | tr -d '\r')
 if [[ -z "$PYTHON3" ]]; then
   if [[ -x /cygdrive/c/Python39/python.exe ]]; then
     export PYTHON3=$(cygpath -w /cygdrive/c/Python39/python.exe)
