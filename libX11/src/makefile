@@ -278,6 +278,6 @@ load_makefile util\makefile MAKESERVER=0 DEBUG=$(DEBUG)
 endif
 
 $(OBJDIR)\ks_tables.h: $(KEYSYMDEF) $(MAKEKEYS)
-	"$(MAKEKEYS)" $(relpath $<) > $(relpath $@)
+	call $(relpath $(MAKEKEYS)) $(relpath $<) > $(relpath $@)
 
 
