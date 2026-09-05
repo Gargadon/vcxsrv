@@ -63,6 +63,23 @@ jobs:
         with:
           packages: bison,flex,gawk,gperf,gzip,nasm,patch,perl,python39,python39-lxml,sed
 
+      - name: Enable native MSVC toolchain for build generators
+        if: matrix.build_arch == 'arm64'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+
+      - name: Build native makekeys for ARM64 cross compilation
+        if: matrix.build_arch == 'arm64'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path hosttools -Force | Out-Null
+          & cl.exe /nologo /O2 /MT /Iinclude /I. /Fe:hosttools\makekeys.exe /Fo:hosttools\makekeys.obj libX11\src\util\makekeys.c
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # Run the generator on the runner before enabling the ARM64 compiler.
+          & .\hosttools\makekeys.exe X11\keysymdef.h | Out-Null
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: Enable MSVC toolchain
         uses: ilammy/msvc-dev-cmd@v1
         with:

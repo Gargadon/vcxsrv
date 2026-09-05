@@ -270,9 +270,14 @@ INCLUDES := . xcms xlibi18n xkb $(MHMAKECONF)\X11 $(OBJDIR) $(INCLUDES)
 
 KEYSYMDEF = $(MHMAKECONF)/X11/keysymdef.h
 
+ifeq ($(ARM64),1)
+MAKEKEYS=$(MHMAKECONF)\hosttools\makekeys.exe
+else
+MAKEKEYS=util\$(NOSERVOBJDIR)\makekeys.exe
 load_makefile util\makefile MAKESERVER=0 DEBUG=$(DEBUG)
+endif
 
-$(OBJDIR)\ks_tables.h: $(KEYSYMDEF) hosttools\makekeys.exe
-	hosttools\makekeys $(relpath $<) > $(relpath $@)
+$(OBJDIR)\ks_tables.h: $(KEYSYMDEF) $(MAKEKEYS)
+	"$(MAKEKEYS)" $(relpath $<) > $(relpath $@)
 
 
