@@ -46,3 +46,9 @@ $(OBJDIR)\xkbparse.c: xkbparse.y
 # as a separate dependency so parallel mhmake builds wait for the generated
 # source before compiling xkbparse.obj.
 $(OBJDIR)\xkbparse.h: $(OBJDIR)\xkbparse.c
+
+# Keep the generated parser object tied directly to Bison's output. This
+# explicit rule avoids mhmake treating xkbparse.c as an ordinary source and
+# scheduling the link before the generated object exists.
+$(OBJDIR)\xkbparse.obj: $(OBJDIR)\xkbparse.c $(OBJDIR)\xkbparse.h
+	$(CC) $(CCFLAGS) $(COMMONCFLAGS)
