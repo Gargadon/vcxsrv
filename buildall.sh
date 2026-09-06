@@ -204,12 +204,28 @@ fi
 
 cd pthreads
 if [[ "$BUILDRELEASE" == "1" ]] ; then
-	nmake.exe VC-static
+	if [[ "$TARGET_ARCH" == "arm64" ]]; then
+		nmake.exe IS64=0 VC-static
+	else
+		nmake.exe VC-static
+	fi
 	check-error 'Error compiling pthreads for release'
+	if [[ "$TARGET_ARCH" == "arm64" && ! -f libpthreadVC3.lib ]]; then
+		echo 'pthreads did not produce libpthreadVC3.lib for ARM64'
+		exit 1
+	fi
 fi
 if [[ "$BUILDDEBUG" == "1" ]] ; then
-	nmake.exe VC-static-debug
+	if [[ "$TARGET_ARCH" == "arm64" ]]; then
+		nmake.exe IS64=0 VC-static-debug
+	else
+		nmake.exe VC-static-debug
+	fi
 	check-error 'Error compiling pthreads for debug'
+	if [[ "$TARGET_ARCH" == "arm64" && ! -f libpthreadVC3d.lib ]]; then
+		echo 'pthreads did not produce libpthreadVC3d.lib for ARM64'
+		exit 1
+	fi
 fi
 cd ..
 
