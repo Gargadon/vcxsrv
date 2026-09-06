@@ -39,5 +39,10 @@ CSRCS = action.c \
 
 LINKLIBS += $(PTHREADLIB) $(FREETYPELIB) $(OPENSSLLIB)
 
-$(OBJDIR)\xkbparse.c $(OBJDIR)\xkbparse.h: xkbparse.y
+$(OBJDIR)\xkbparse.c: xkbparse.y
 	bison.bat -d -o$(OBJDIR)\xkbparse.c $<
+
+# Bison emits the header as a side effect of generating xkbparse.c. Keep this
+# as a separate dependency so parallel mhmake builds wait for the generated
+# source before compiling xkbparse.obj.
+$(OBJDIR)\xkbparse.h: $(OBJDIR)\xkbparse.c

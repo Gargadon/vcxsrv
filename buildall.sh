@@ -156,10 +156,15 @@ if [[ "$BUILDRELEASE" == "1" ]] ; then
 
 	if [[ "$IS64" == "1" ]]; then
 
-		if [[ ! -d "release64" ]]; then
-		  mkdir release64
+		if [[ "$TARGET_ARCH" == "arm64" ]]; then
+			OPENSSL_BUILDDIR=arm64
+		else
+			OPENSSL_BUILDDIR=release64
 		fi
-		cd release64
+		if [[ ! -d "$OPENSSL_BUILDDIR" ]]; then
+		  mkdir "$OPENSSL_BUILDDIR"
+		fi
+		cd "$OPENSSL_BUILDDIR"
 
 		"$PERL_NATIVE" ../Configure $OPENSSL_CONFIG --release
 	else
@@ -182,10 +187,15 @@ fi
 if [[ "$BUILDDEBUG" == "1" ]] ; then
 	cd openssl
 	if [[ "$IS64" == "1" ]]; then
-		if [[ ! -d "debug64" ]]; then
-		  mkdir debug64
+		if [[ "$TARGET_ARCH" == "arm64" ]]; then
+			OPENSSL_BUILDDIR=debugarm64
+		else
+			OPENSSL_BUILDDIR=debug64
 		fi
-		cd debug64
+		if [[ ! -d "$OPENSSL_BUILDDIR" ]]; then
+		  mkdir "$OPENSSL_BUILDDIR"
+		fi
+		cd "$OPENSSL_BUILDDIR"
 		"$PERL_NATIVE" ../Configure $OPENSSL_CONFIG --debug
 	else
 		if [[ ! -d "debug32" ]]; then
