@@ -17,7 +17,7 @@ add_strawberry_perl() {
   done
   perl_exe=$(cmd.exe /c where perl.exe 2>/dev/null | tr -d '\r' | grep -i strawberry | head -n 1)
   if [[ -n "$perl_exe" ]]; then
-    perl_path=$(cygpath -u "$perl_exe")
+    perl_path=$(/usr/bin/cygpath -u "$perl_exe")
     perl_dir=$(dirname "$perl_path")
     export PATH="$perl_dir:$PATH"
     export PERL_NATIVE="$perl_path"
@@ -58,11 +58,20 @@ rm -f commands.sh
 export MHMAKECONF=$(cmd.exe /c cd | tr -d '\r')
 if [[ -z "$PYTHON3" ]]; then
   if [[ -x /cygdrive/c/Python39/python.exe ]]; then
-    export PYTHON3=$(cygpath -w /cygdrive/c/Python39/python.exe)
+    PYTHON3=/cygdrive/c/Python39/python.exe
   else
-    export PYTHON3=$(cygpath -w "$(command -v python.exe)")
+    PYTHON3=$(command -v python.exe)
   fi
 fi
+# Use Cygwin's converter explicitly: Git's cygpath misinterprets /cygdrive.
+# mhmake recipes invoke PYTHON3 as a command, so use the Windows short path
+# to support Python installations under directories such as Program Files.
+PYTHON3=$(/usr/bin/cygpath -m -s "$PYTHON3") || exit 1
+if [[ -z "$PYTHON3" || "$PYTHON3" == *" "* || ! -f "$(/usr/bin/cygpath -u "$PYTHON3")" ]]; then
+  echo "Python executable must exist at a Windows path without spaces: $PYTHON3" >&2
+  exit 1
+fi
+export PYTHON3
 export IS64=$1
 if [[ "$TARGET_ARCH" == "arm64" ]]; then
   export ARM64=1
