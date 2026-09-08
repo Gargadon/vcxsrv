@@ -119,7 +119,10 @@ jobs:
             if (-not (Test-Path -LiteralPath $source)) { throw "Missing host tool dependency: $source" }
             Copy-Item -LiteralPath $source -Destination hosttools -Force
           }
-          $runtime = Join-Path $env:VCToolsRedistDir 'x64/Microsoft.VC143.CRT'
+          $runtimeRoot = Join-Path $env:VCToolsRedistDir 'x64'
+          $runtimeDirs = @(Get-ChildItem -LiteralPath $runtimeRoot -Directory -Filter 'Microsoft.VC*.CRT')
+          if ($runtimeDirs.Count -ne 1) { throw "Expected one CRT directory in $runtimeRoot; found $($runtimeDirs.Count)" }
+          $runtime = $runtimeDirs[0].FullName
           foreach ($dll in @('vcruntime140.dll', 'vcruntime140_1.dll', 'msvcp140.dll')) {
             Copy-Item -LiteralPath (Join-Path $runtime $dll) -Destination hosttools -Force
           }
@@ -140,10 +143,10 @@ jobs:
         shell: pwsh
         run: |
           $runtimeArch = if ('${{ inputs.build_arch }}' -eq 'arm64') { 'arm64' } else { 'x64' }
-          $runtime = Join-Path $env:VCToolsRedistDir "$runtimeArch\Microsoft.VC143.CRT"
-          if (-not (Test-Path -LiteralPath $runtime)) {
-            throw "MSVC runtime directory not found: $runtime"
-          }
+          $runtimeRoot = Join-Path $env:VCToolsRedistDir $runtimeArch
+          $runtimeDirs = @(Get-ChildItem -LiteralPath $runtimeRoot -Directory -Filter 'Microsoft.VC*.CRT')
+          if ($runtimeDirs.Count -ne 1) { throw "Expected one CRT directory in $runtimeRoot; found $($runtimeDirs.Count)" }
+          $runtime = $runtimeDirs[0].FullName
           Copy-Item "$runtime\vcruntime140.dll" "xorg-server\installer\" -Force
           Copy-Item "$runtime\vcruntime140_1.dll" "xorg-server\installer\" -Force
           Copy-Item "$runtime\msvcp140.dll" "xorg-server\installer\" -Force
