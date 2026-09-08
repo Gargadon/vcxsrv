@@ -43,7 +43,9 @@ fi
 # but nmake keeps the build reproducible on clean CI runners that do not have
 # Qt Creator installed.
 if command -v jom.exe >/dev/null 2>&1; then
-  MAKE_OPENSSL=(jom.exe "/J$2")
+  # OpenSSL's generated MSVC makefiles share app.pdb between several
+  # targets. Serialize this build to avoid C1041 PDB contention.
+  MAKE_OPENSSL=(jom.exe /J1)
 else
   MAKE_OPENSSL=(nmake.exe)
 fi

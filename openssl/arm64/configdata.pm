@@ -21,7 +21,7 @@ our %config = (
     "ASFLAGS" => [],
     "CC" => "cl",
     "CFLAGS" => [
-        "/W3 /wd4090 /nologo /O2"
+        "-FS"
     ],
     "CPP" => "\$(CC) /EP /C",
     "CPPDEFINES" => [],
@@ -251,7 +251,7 @@ our %config = (
         "ASFLAGS" => undef,
         "BUILDFILE" => undef,
         "CC" => undef,
-        "CFLAGS" => undef,
+        "CFLAGS" => "-FS",
         "CPP" => undef,
         "CPPDEFINES" => undef,
         "CPPFLAGS" => undef,
@@ -302,7 +302,7 @@ our %target = (
     "LDFLAGS" => "/nologo /debug",
     "MT" => "mt",
     "MTFLAGS" => "-nologo",
-    "RANLIB" => "CODE(0x26f8ce68fc8)",
+    "RANLIB" => "CODE(0x1dab698e488)",
     "RC" => "rc",
     "_conf_fname_int" => [
         "..\\Configurations\\00-base-templates.conf",
@@ -342,7 +342,7 @@ our %target = (
     "dso_cflags" => "/Zi /Fddso.pdb",
     "dso_scheme" => "win32",
     "enable" => [],
-    "ex_libs" => "onecore.lib",
+    "ex_libs" => "onecore.lib vcruntime.lib ucrt.lib",
     "includes" => [],
     "ld_implib_flag" => "/implib:",
     "ld_resp_delim" => "
@@ -35555,8 +35555,8 @@ unless (caller) {
     use File::Copy;
     use Pod::Usage;
 
-    use lib 'C:/Users/dkant/Source/banchoxterm/build/vcxsrv-arm64-src/openssl/util/perl';
-    use OpenSSL::fallback 'C:/Users/dkant/Source/banchoxterm/build/vcxsrv-arm64-src/openssl/external/perl/MODULES.txt';
+    use lib 'C:/Users/dkant/Source/vcxsrv/openssl/util/perl';
+    use OpenSSL::fallback 'C:/Users/dkant/Source/vcxsrv/openssl/external/perl/MODULES.txt';
 
     my $here = dirname($0);
 
@@ -35583,7 +35583,7 @@ unless (caller) {
             );
 
         use lib '.';
-        use lib 'C:/Users/dkant/Source/banchoxterm/build/vcxsrv-arm64-src/openssl/Configurations';
+        use lib 'C:/Users/dkant/Source/vcxsrv/openssl/Configurations';
         use gentemplate;
 
         open my $buildfile_template_fh, ">$buildfile_template"
@@ -35600,8 +35600,8 @@ unless (caller) {
 
         my $prepend = <<'_____';
 use File::Spec::Functions;
-use lib 'C:/Users/dkant/Source/banchoxterm/build/vcxsrv-arm64-src/openssl/util/perl';
-use lib 'C:/Users/dkant/Source/banchoxterm/build/vcxsrv-arm64-src/openssl/Configurations';
+use lib 'C:/Users/dkant/Source/vcxsrv/openssl/util/perl';
+use lib 'C:/Users/dkant/Source/vcxsrv/openssl/Configurations';
 use lib '.';
 use platform;
 _____

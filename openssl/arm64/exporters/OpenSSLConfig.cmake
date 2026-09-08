@@ -87,7 +87,7 @@ if(_ossl_use_static_libs)
   add_library(OpenSSL::SSL STATIC IMPORTED)
 
   set(OPENSSL_LIBCRYPTO_STATIC "${OPENSSL_LIBRARY_DIR}/libcrypto_static.lib")
-  set(OPENSSL_LIBCRYPTO_DEPENDENCIES onecore.lib)
+  set(OPENSSL_LIBCRYPTO_DEPENDENCIES onecore.lib vcruntime.lib ucrt.lib)
   set_target_properties(OpenSSL::Crypto PROPERTIES
     IMPORTED_LINK_INTERFACE_LANGUAGES "C"
     IMPORTED_LOCATION ${OPENSSL_LIBCRYPTO_STATIC})

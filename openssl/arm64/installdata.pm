@@ -40,7 +40,7 @@ our $VERSION                    = '3.4.1';
 our @LDLIBS                     =
     # Unix and Windows use space separation, VMS uses comma separation
     $^O eq 'VMS'
-    ? split(/ *, */, 'onecore.lib ')
-    : split(/ +/, 'onecore.lib ');
+    ? split(/ *, */, 'onecore.lib vcruntime.lib ucrt.lib ')
+    : split(/ +/, 'onecore.lib vcruntime.lib ucrt.lib ');
 
 1;

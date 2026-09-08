@@ -1,4 +1,4 @@
-prefix=C:\Users\dkant\Source\banchoxterm\build\vcxsrv-arm64-src\openssl\arm64
+prefix=C:\Users\dkant\Source\vcxsrv\openssl\arm64
 exec_prefix=${prefix}
 libdir=${exec_prefix}
 includedir=${prefix}/include ${prefix}/../include 

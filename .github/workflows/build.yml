@@ -10,147 +10,17 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: x64
-            msvc_arch: amd64
-            build_arch: x64
-            archive_prefix: vcxsrv-64
-          - name: arm64
-            msvc_arch: amd64_arm64
-            build_arch: arm64
-            archive_prefix: vcxsrv-arm64
+  x64:
+    uses: ./.github/workflows/build-architecture.yml
+    with:
+      build_arch: x64
+      msvc_arch: amd64
+      archive_prefix: vcxsrv-64
 
-    runs-on: windows-2025
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install native build prerequisites
-        shell: pwsh
-        run: |
-          choco install strawberryperl nasm -y --no-progress
-          $winFlexBisonVersion = '2.5.25'
-          $winFlexBisonZip = Join-Path $env:TEMP "win_flex_bison-$winFlexBisonVersion.zip"
-          $winFlexBisonDir = Join-Path $env:RUNNER_TEMP "win_flex_bison-$winFlexBisonVersion"
-          Invoke-WebRequest `
-            -Uri "https://github.com/lexxmark/winflexbison/releases/download/v$winFlexBisonVersion/win_flex_bison-$winFlexBisonVersion.zip" `
-            -OutFile $winFlexBisonZip
-          Expand-Archive -Path $winFlexBisonZip -DestinationPath $winFlexBisonDir -Force
-          $winBison = Get-ChildItem -Path $winFlexBisonDir -Filter 'win_bison.exe' -Recurse | Select-Object -First 1
-          if (-not $winBison) { throw "win_bison.exe was not found in $winFlexBisonDir" }
-          $winBisonWorkspacePath = Join-Path $env:GITHUB_WORKSPACE 'win_bison.exe'
-          Copy-Item -LiteralPath $winBison.FullName -Destination $winBisonWorkspacePath -Force
-          Add-Content -Path $env:GITHUB_ENV -Value "WIN_BISON_PATH=$winBisonWorkspacePath"
-          & $winBisonWorkspacePath --version | Select-Object -First 1
-          $perlCandidates = @(
-            'C:\Strawberry\perl\bin',
-            'C:\ProgramData\chocolatey\lib\strawberryperl\tools\perl\bin'
-          )
-          $perlDir = $perlCandidates |
-            Where-Object { Test-Path (Join-Path $_ 'perl.exe') } |
-            Select-Object -First 1
-          if (-not $perlDir) { throw 'Strawberry Perl was installed but perl.exe was not found' }
-          Add-Content -Path $env:GITHUB_PATH -Value $perlDir
-          Write-Host "Using Strawberry Perl from $perlDir"
-
-      - name: Install Cygwin build tools
-        uses: cygwin/cygwin-install-action@master
-        with:
-          packages: bison,flex,gawk,gperf,gzip,nasm,patch,perl,python39,python39-lxml,sed
-
-      - name: Enable native MSVC toolchain for build generators
-        if: matrix.build_arch == 'arm64'
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: amd64
-
-      - name: Build native makekeys for ARM64 cross compilation
-        if: matrix.build_arch == 'arm64'
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Path hosttools -Force | Out-Null
-          & cl.exe /nologo /O2 /MT /Iinclude /I. /Fe:hosttools\makekeys.exe /Fo:hosttools\makekeys.obj libX11\src\util\makekeys.c
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          # Run the generator on the runner before enabling the ARM64 compiler.
-          & .\hosttools\makekeys.exe X11\keysymdef.h | Out-Null
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-      - name: Enable MSVC toolchain
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.msvc_arch }}
-
-      - name: Build VcXsrv
-        shell: pwsh
-        run: |
-          $cygwinRoot = @('D:\cygwin', 'C:\cygwin64', 'C:\cygwin') |
-            Where-Object { Test-Path (Join-Path $_ 'bin\bash.exe') } |
-            Select-Object -First 1
-          if (-not $cygwinRoot) { throw 'Cygwin bash.exe was not found' }
-          $env:CYGWIN_ROOT = $cygwinRoot
-          $bash = Join-Path $cygwinRoot 'bin\bash.exe'
-          $cygpath = Join-Path $cygwinRoot 'bin\cygpath.exe'
-          $repo = (& $cygpath -u $env:GITHUB_WORKSPACE).Trim()
-          $command = "cd '$repo' && export SHELLOPTS && set -o igncr && ./buildall.sh 1 2 R x ${{ matrix.build_arch }} NOPACKAGE"
-          & $bash --login -eo pipefail -c $command
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-      - name: Stage MSVC runtime
-        shell: pwsh
-        run: |
-          $runtimeArch = if ('${{ matrix.name }}' -eq 'arm64') { 'arm64' } else { 'x64' }
-          $runtime = Join-Path $env:VCToolsRedistDir "$runtimeArch\Microsoft.VC143.CRT"
-          if (-not (Test-Path -LiteralPath $runtime)) {
-            throw "MSVC runtime directory not found: $runtime"
-          }
-          Copy-Item "$runtime\vcruntime140.dll" "xorg-server\installer\" -Force
-          Copy-Item "$runtime\vcruntime140_1.dll" "xorg-server\installer\" -Force
-          Copy-Item "$runtime\msvcp140.dll" "xorg-server\installer\" -Force
-
-      - name: Create standalone package
-        shell: pwsh
-        run: |
-          $cygwinRoot = @('D:\cygwin', 'C:\cygwin64', 'C:\cygwin') |
-            Where-Object { Test-Path (Join-Path $_ 'bin\bash.exe') } |
-            Select-Object -First 1
-          if (-not $cygwinRoot) { throw 'Cygwin bash.exe was not found' }
-          $bash = Join-Path $cygwinRoot 'bin\bash.exe'
-          $cygpath = Join-Path $cygwinRoot 'bin\cygpath.exe'
-          $repo = (& $cygpath -u $env:GITHUB_WORKSPACE).Trim()
-          if ('${{ matrix.name }}' -eq 'arm64') {
-            $packageCommand = 'bash mkzip-arm64.sh'
-          } else {
-            $packageCommand = 'bash mkzip-64.sh'
-          }
-          $command = "cd '$repo/xorg-server/installer' && export SHELLOPTS && set -o igncr && $packageCommand"
-          & $bash --login -eo pipefail -c $command
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-      - name: Extract and create ZIP
-        shell: pwsh
-        run: |
-          $archive = Get-ChildItem "xorg-server\installer\${{ matrix.archive_prefix }}.*.portable.tar.gz" | Select-Object -First 1
-          if (-not $archive) {
-            throw "Standalone archive was not produced for ${{ matrix.name }}"
-          }
-          $dist = "dist\vcxsrv-${{ matrix.name }}"
-          New-Item -ItemType Directory -Path $dist -Force | Out-Null
-          tar -xzf $archive.FullName -C $dist
-          Compress-Archive -Path "$dist\*" -DestinationPath "vcxsrv-windows-${{ matrix.name }}.zip"
-
-      - name: Upload standalone ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: vcxsrv-windows-${{ matrix.name }}
-          path: vcxsrv-windows-${{ matrix.name }}.zip
-
-      - name: Publish release asset
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: vcxsrv-windows-${{ matrix.name }}.zip
+  arm64:
+    needs: x64
+    uses: ./.github/workflows/build-architecture.yml
+    with:
+      build_arch: arm64
+      msvc_arch: amd64_arm64
+      archive_prefix: vcxsrv-arm64

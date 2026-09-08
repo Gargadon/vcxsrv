@@ -20,5 +20,5 @@ endif
 $(DIRFILE): $(XKBCOMP_HOST)
 	mkdir -p $(DESTDIR)
 	-del -e $@
-	cd $(DESTDIR) & $(XKBCOMP_HOST) -lfhlpR -o $(relpath $@) *
+	bash -lc "export PATH=\"$$(cygpath -u '$(subst \,/,$(MHMAKECONF))/libxcb/src/$(subst \,/,$(OBJDIR))'):$$(cygpath -u '$(subst \,/,$(MHMAKECONF))/libX11/$(subst \,/,$(OBJDIR))'):$$(cygpath -u '$(subst \,/,$(MHMAKECONF))/libXau/$(subst \,/,$(OBJDIR))'):$$PATH\" && cd '$(subst \,/,$(MHMAKECONF))/xorg-server/xkeyboard-config/$(subst \,/,$(THISDIR))' && find . -maxdepth 1 -type f ! -name makefile -printf '%f*\\0' | xargs -0 '$(subst \,/,$(XKBCOMP_HOST))' -lfhlpR -o '$(subst \,/,$(relpath $@))'"
 endif

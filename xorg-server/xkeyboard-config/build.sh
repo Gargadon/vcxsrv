@@ -1,3 +1,7 @@
-meson -D=xorg-rules-copy=true --prefix=$(realpath ../xkbdata) builddir
-cd builddir; meson compile; meson install
+#!/usr/bin/env bash
+set -e
+prefix=$(cygpath -w "$(cd ../xkbdata && pwd)")
+python.exe -m mesonbuild.mesonmain setup -Dxorg-rules-copy=true --prefix="$prefix" builddir
+python.exe -m mesonbuild.mesonmain compile -C builddir
+python.exe -m mesonbuild.mesonmain install -C builddir
 

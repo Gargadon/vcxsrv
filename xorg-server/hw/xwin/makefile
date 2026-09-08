@@ -97,3 +97,9 @@ INCLUDES += $(OBJDIR)
 $(OBJDIR)\winprefslex.c $(OBJDIR)\winprefsyacc.c $(OBJDIR)\winprefsyacc.h: winprefslex.l winprefsyacc.y
 	doflexbison.bat $(subst \,/,$(OBJDIR))
 
+$(OBJDIR)\winprefsyacc.obj: $(OBJDIR)\winprefsyacc.c $(OBJDIR)\winprefsyacc.h
+	$(CC) $(CCFLAGS) $(COMMONCFLAGS)
+
+$(OBJDIR)\winprefslex.obj: $(OBJDIR)\winprefslex.c
+	$(CC) $(CCFLAGS) $(COMMONCFLAGS)
+

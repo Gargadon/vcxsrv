@@ -2,14 +2,19 @@ ifeq ($(MAKESERVER),1)
 $(error Please do not specify MAKESERVER=1)
 endif
 
-INT = $(PYTHON3)
+# Use the PATH-resolved native interpreter for piped recipes. mhmake invokes
+# these recipes through cmd.exe, where a drive-qualified Python path can break
+# pipe parsing even when quoted.
+INT = python.exe
 EXT = py
 BIN = ./bin
 
 UCS2ANY = $(INT) $(BIN)/ucstoany.$(EXT)
 BDF2PSF = $(INT) $(BIN)/bdftopsf.$(EXT)
 UCS2X11 = $(INT) $(BIN)/ucstoany.$(EXT) -f
-BDF2PCF = $(BDFTOPCF)
+# mhmake executes this command after a pipe through cmd.exe. Use a path
+# relative to this makefile so cmd does not misparse an absolute C:\ path.
+BDF2PCF = $(relpath $(BDFTOPCF))
 #BDF2OTB = fontforge -lang=ff -c 'Open($$3); ScaleToEm(1024); Generate($$2)'
 BDF2OTB = $(INT) $(BIN)/otb1cli.$(EXT)
 
