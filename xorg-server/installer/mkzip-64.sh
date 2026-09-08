@@ -1,6 +1,19 @@
 VERSION="21.1.10.0"
 OutFile="vcxsrv-64.${VERSION}.portable.tar"
 
+# Some auxiliary X applications are not built by every configuration.  Add
+# them only when their output exists so packaging can still produce the core
+# VcXsrv archive.
+add_if_present() {
+  local dir="$1"
+  local file="$2"
+  if [ -f "$dir/$file" ]; then
+    tar -rf "$OutFile" -C "$dir" "$file"
+  else
+    echo "Skipping missing optional file: $dir/$file"
+  fi
+}
+
 rm -f $OutFile
 rm -f $OutFile.gz
 
@@ -9,24 +22,24 @@ tar -rf $OutFile -C ../dix protocol.txt
 tar -rf $OutFile -C .. system.XWinrc
 tar -rf $OutFile -C .. X0.hosts
 tar -rf $OutFile -C ../../xkbcomp/obj64/release xkbcomp.exe
-tar -rf $OutFile -C ../../apps/xhost/obj64/release xhost.exe
-tar -rf $OutFile -C ../../apps/xrdb/obj64/release xrdb.exe
-tar -rf $OutFile -C ../../apps/xauth/obj64/release xauth.exe
-tar -rf $OutFile -C ../../apps/xcalc/obj64/release xcalc.exe
-tar -rf $OutFile -C ../../apps/xcalc/app-defaults xcalc
-tar -rf $OutFile -C ../../apps/xcalc/app-defaults xcalc-color
-tar -rf $OutFile -C ../../apps/xclock/obj64/release xclock.exe
-tar -rf $OutFile -C ../../apps/xclock/app-defaults xclock
-tar -rf $OutFile -C ../../apps/xclock/app-defaults xclock-color
-tar -rf $OutFile -C ../../apps/xwininfo/obj64/release xwininfo.exe
+add_if_present ../../apps/xhost/obj64/release xhost.exe
+add_if_present ../../apps/xrdb/obj64/release xrdb.exe
+add_if_present ../../apps/xauth/obj64/release xauth.exe
+add_if_present ../../apps/xcalc/obj64/release xcalc.exe
+add_if_present ../../apps/xcalc/app-defaults xcalc
+add_if_present ../../apps/xcalc/app-defaults xcalc-color
+add_if_present ../../apps/xclock/obj64/release xclock.exe
+add_if_present ../../apps/xclock/app-defaults xclock
+add_if_present ../../apps/xclock/app-defaults xclock-color
+add_if_present ../../apps/xwininfo/obj64/release xwininfo.exe
 tar -rf $OutFile -C .. XKeysymDB
 tar -rf $OutFile -C ../.. libX11/src/XErrorDB
 tar -rf $OutFile -C ../.. libX11/src/xcms/Xcms.txt
 tar -rf $OutFile -C .. XtErrorDB
 tar -rf $OutFile -C .. font-dirs
 tar -rf $OutFile -C .. .Xdefaults
-tar -rf $OutFile -C ../hw/xwin/xlaunch/obj64/release xlaunch.exe
-tar -rf $OutFile -C ../../tools/plink/obj64/release plink.exe
+add_if_present ../hw/xwin/xlaunch/obj64/release xlaunch.exe
+add_if_present ../../tools/plink/obj64/release plink.exe
 tar -rf $OutFile -C ../../mesalib/src/obj64/release swrast_dri.dll
 tar -rf $OutFile -C ../hw/xwin/swrastwgl_dri/obj64/release swrastwgl_dri.dll
 tar -rf $OutFile -C ../../dxtn/obj64/release dxtn.dll
