@@ -42,7 +42,7 @@ add_if_present ../hw/xwin/xlaunch/obj64/release xlaunch.exe
 add_if_present ../../tools/plink/obj64/release plink.exe
 tar -rf $OutFile -C ../../mesalib/src/obj64/release swrast_dri.dll
 tar -rf $OutFile -C ../hw/xwin/swrastwgl_dri/obj64/release swrastwgl_dri.dll
-tar -rf $OutFile -C ../../dxtn/obj64/release dxtn.dll
+add_if_present ../../dxtn/obj64/release dxtn.dll
 tar -rf $OutFile -C ../../libxml2/bin64 libxml2-2.dll
 tar -rf $OutFile -C ../../libxml2/bin64 libgcc_s_sjlj-1.dll
 tar -rf $OutFile -C ../../libxml2/bin64 libiconv-2.dll
@@ -51,8 +51,8 @@ tar -rf $OutFile -C ../../zlib/obj64/release zlib1.dll
 tar -rf $OutFile -C ../../libxcb/src/obj64/release libxcb.dll
 tar -rf $OutFile -C ../../libXau/obj64/release libXau.dll
 tar -rf $OutFile -C ../../libX11/obj64/release libX11.dll
-tar -rf $OutFile -C ../../libXext/src/obj64/release libXext.dll
-tar -rf $OutFile -C ../../libXmu/src/obj64/release libXmu.dll
+add_if_present ../../libXext/src/obj64/release libXext.dll
+add_if_present ../../libXmu/src/obj64/release libXmu.dll
 tar -rf $OutFile -C ../../openssl/release64 libcrypto-3-x64.dll
 tar -rf $OutFile -C ../../freetype/objs/x64/Release freetype.dll
 tar -rf $OutFile vcruntime140.dll

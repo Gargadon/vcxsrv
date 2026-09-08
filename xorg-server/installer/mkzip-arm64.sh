@@ -7,6 +7,15 @@ OUTFILE="vcxsrv-arm64.${VERSION}.portable.tar"
 rm -f "$OUTFILE" "$OUTFILE.gz"
 
 add() { tar -rf "$OUTFILE" "$@"; }
+add_if_present() {
+  local dir="$1"
+  local file="$2"
+  if [ -f "$dir/$file" ]; then
+    add -C "$dir" "$file"
+  else
+    echo "Skipping missing optional file: $dir/$file"
+  fi
+}
 
 tar -cf "$OUTFILE" -C ../objARM64/servrelease vcxsrv.exe
 add -C ../dix protocol.txt
@@ -19,8 +28,8 @@ add -C ../../zlib/objARM64/release zlib1.dll
 add -C ../../libxcb/src/objARM64/release libxcb.dll
 add -C ../../libXau/objARM64/release libXau.dll
 add -C ../../libX11/src/objARM64/release libX11.dll
-add -C ../../libXext/src/objARM64/release libXext.dll
-add -C ../../libXmu/src/objARM64/release libXmu.dll
+add_if_present ../../libXext/src/objARM64/release libXext.dll
+add_if_present ../../libXmu/src/objARM64/release libXmu.dll
 add -C ../../openssl/arm64 libcrypto-3-arm64.dll libssl-3-arm64.dll
 add -C ../../freetype/objs/ARM64/Release freetype.dll
 add vcruntime140.dll vcruntime140_1.dll msvcp140.dll
