@@ -27,7 +27,7 @@ add -C ../../libX11/src XErrorDB xcms/Xcms.txt
 add -C ../../zlib/objARM64/release zlib1.dll
 add -C ../../libxcb/src/objARM64/release libxcb.dll
 add -C ../../libXau/objARM64/release libXau.dll
-add -C ../../libX11/src/objARM64/release libX11.dll
+add -C ../../libX11/objARM64/release libX11.dll
 add_if_present ../../libXext/src/objARM64/release libXext.dll
 add_if_present ../../libXmu/src/objARM64/release libXmu.dll
 add -C ../../openssl/arm64 libcrypto-3-arm64.dll libssl-3-arm64.dll
