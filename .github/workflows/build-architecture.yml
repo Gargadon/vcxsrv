@@ -179,7 +179,19 @@ jobs:
           }
           $dist = "dist\vcxsrv-${{ inputs.build_arch }}"
           New-Item -ItemType Directory -Path $dist -Force | Out-Null
-          tar -xzf $archive.FullName -C $dist
+          # The runner PATH contains Cygwin's GNU tar. Convert Windows paths
+          # before invoking it; otherwise a drive letter is parsed as a tar
+          # remote-host name ("Cannot connect to D:").
+          $cygwinRoot = @('D:\cygwin', 'C:\cygwin64', 'C:\cygwin') |
+            Where-Object { Test-Path (Join-Path $_ 'bin\bash.exe') } |
+            Select-Object -First 1
+          if (-not $cygwinRoot) { throw 'Cygwin bash.exe was not found' }
+          $bash = Join-Path $cygwinRoot 'bin\bash.exe'
+          $cygpath = Join-Path $cygwinRoot 'bin\cygpath.exe'
+          $archiveUnix = (& $cygpath -u $archive.FullName).Trim()
+          $distUnix = (& $cygpath -u (Resolve-Path $dist)).Trim()
+          & $bash --login -eo pipefail -c "tar -xzf '$archiveUnix' -C '$distUnix'"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Compress-Archive -Path "$dist\*" -DestinationPath "vcxsrv-windows-${{ inputs.build_arch }}.zip"
 
       - name: Upload standalone ZIP
